@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html class="ocks-org do-not-copy">
+<meta charset="utf-8">
+<title>D3 + Leaflet</title>
+<style>
+#map {
+  width: 960px;
+  height: 800px;
+}
+
+svg {
+  position: relative;
+}
+
+path {
+  fill: #000;
+  fill-opacity: .2;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+path:hover {
+  fill: brown;
+  fill-opacity: .7;
+}
+
+</style>
+
+<header>
+  <aside> 19, 2015</aside>
+  <a href="../" rel="author"></a>
+</header>
+<body>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+
+<div id="map"/>
+
+
+
+<script>
+
+var map = new L.Map("map", {center: [41.8858, 12.4822], zoom: 12})
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    maxZoom: 12,
+    id: 'claudius.ml99a5kb',
+    accessToken: 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg'
+}).addTo(map);
+
+</script>
+</body>
