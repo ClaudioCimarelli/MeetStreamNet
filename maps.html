@@ -5,8 +5,8 @@
 <title>D3 + Leaflet</title>
 <style>
 #map {
-  width: 960px;
-  height: 800px;
+  width: auto;
+  height: 100vh;
 }
 
 svg {
@@ -28,7 +28,7 @@ path:hover {
 </style>
 
 <header>
-  <aside> 19, 2015</aside>
+  <!-- <aside> 19, 2015</aside> -->
   <a href="../" rel="author"></a>
 </header>
 <body>
@@ -42,10 +42,11 @@ path:hover {
 
 <script>
 
-var map = new L.Map("map", {center: [41.8858, 12.4822], zoom: 12})
+var map = new L.Map("map", {center: [41.8858, 12.4822], zoom: 6})
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     maxZoom: 12,
+    minZoom: 2,
     id: 'claudius.ml99a5kb',
     accessToken: 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg'
 }).addTo(map);
