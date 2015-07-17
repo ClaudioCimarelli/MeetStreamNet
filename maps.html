@@ -1,55 +1,81 @@
 
 <!DOCTYPE html>
-<html class="ocks-org do-not-copy">
+<html lang="en">
 <meta charset="utf-8">
-<title>D3 + Leaflet</title>
+<title>MeetUP RSVPs Stream Network</title>
+
 <style>
-#map {
-  width: auto;
-  height: 100vh;
-}
-
-svg {
-  position: relative;
-}
-
-path {
-  fill: #000;
-  fill-opacity: .2;
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-
-path:hover {
-  fill: brown;
-  fill-opacity: .7;
-}
+html,
+    body {
+        height: 100%;
+        width: 100%;
+    }
+    body {
+        margin: 0;
+    }
+    #map {
+        width: 100%;
+        height: 100%;
+    }
 
 </style>
-
-<header>
-  <!-- <aside> 19, 2015</aside> -->
-  <a href="../" rel="author"></a>
-</header>
 <body>
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+ <script src="http://d3js.org/d3.v3.min.js"></script>
+ <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+ 
+ <div id="map"/>
 
-<div id="map"/>
+<div id="map"></div>
 
 
 
 <script>
 
-var map = new L.Map("map", {center: [41.8858, 12.4822], zoom: 6})
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    maxZoom: 12,
-    minZoom: 2,
-    id: 'claudius.ml99a5kb',
-    accessToken: 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg'
-}).addTo(map);
+  var map = new L.Map("map", {center: [41.8858, 12.4822], zoom: 6})
+  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      maxZoom: 12,
+      minZoom: 2,
+      id: 'claudius.ml99a5kb',
+      accessToken: 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg'
+  }).addTo(map);
+
+  var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+      g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+
+    // when the user zooms in or out you need to reset
+          // the view
+  var transform = d3.geo.transform({
+          point: projectPoint
+      });
+  var d3path = d3.geo.path().projection(transform);
+  function projectPoint(x, y) {
+        var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+              this.stream.point(point.x, point.y);
+       };
+
+  var feature = g.append("circle")
+        .style("stroke", "#006600")
+        .style("fill", "#00cc00")
+        .attr("r", 20);  
+      
+  map.on("viewreset", update);
+  update();
+
+  function update() {
+      feature.attr("transform", 
+        function() { 
+          d = [41.8858, 12.4822];
+          var y = d[1];
+          var x = d[0];
+          return "translate(" +
+                          map.latLngToLayerPoint(new L.LatLng(x,y)).x + "," +
+                          map.latLngToLayerPoint(new L.LatLng(x,y)).y + ")";
+           });
+  };
 
 </script>
 </body>
+</html>
