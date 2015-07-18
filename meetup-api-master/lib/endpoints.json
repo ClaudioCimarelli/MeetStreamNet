@@ -1,0 +1,662 @@
+{
+  "getStatus": {
+    "resource": "https://api.meetup.com/status",
+    "method": "get",
+    "test": {
+      "params": {},
+      "return": {
+        "type": "object",
+        "keys": ["status"]
+      }
+    }
+  },
+  "getBoards": {
+    "resource": "https://api.meetup.com/:urlname/boards",
+    "method": "get",
+    "test": {
+      "params": {
+        "urlname": "NodeJS-Argentina"
+      },
+      "return": {
+        "type": "array"
+      }
+    }
+  },
+  "getDiscussions": {
+    "resource": "https://api.meetup.com/:urlname/boards/:bid/discussions",
+    "method": "get",
+    "test": {
+      "params": {
+        "urlname": "NodeJS-Argentina",
+        "bid": "5068912"
+      },
+      "return": {
+        "type": "array"
+      }
+    }
+  },
+  "getDiscussion": {
+    "resource": "https://api.meetup.com/:urlname/boards/:bid/discussions/:did",
+    "method": "get",
+    "test": {
+      "params": {
+        "urlname": "NodeJS-Argentina",
+        "bid": "5068912",
+        "did": "26228352"
+      },
+      "return": {
+        "type": "array"
+      }
+    }
+  },
+  "getCategories": {
+    "resource": "https://api.meetup.com/2/categories",
+    "method": "get",
+    "test": {
+      "params": {
+        "page": "20"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "postCheckin": {
+    "resource": "https://api.meetup.com/2/checkin",
+    "method": "post"
+  },
+  "getCities": {
+    "resource": "https://api.meetup.com/cities",
+    "method": "get",
+    "test": {
+      "params": {
+        "page": "20"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getOpenEvents": {
+    "resource": "https://api.meetup.com/2/open_events",
+    "method": "get",
+    "test": {
+      "params": {
+        "topic": "javascript"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getConcierge": {
+    "resource": "https://api.meetup.com/2/concierge",
+    "method": "get",
+    "test": {
+      "params": {
+        "country": "argentina"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getEvents": {
+    "resource": "https://api.meetup.com/2/events",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_urlname": "NodeJS-Argentina"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getEvent": {
+    "resource": "https://api.meetup.com/2/event/:id",
+    "method": "get",
+    "test": {
+      "params": {
+        "id": "79797122"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["status", "venue", "id", "group"]
+      }
+    }
+  },
+  "postEvent": {
+    "resource": "https://api.meetup.com/2/event",
+    "method": "post"
+  },
+  "editEvent": {
+    "resource": "https://api.meetup.com/2/event/:id",
+    "method": "post"
+  },
+  "deleteEvent": {
+    "resource": "https://api.meetup.com/2/event/:id",
+    "method": "delete"
+  },
+  "getEventComments": {
+    "resource": "https://api.meetup.com/2/event_comments",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_id": "4603552"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getEventComment": {
+    "resource": "https://api.meetup.com/2/event_comment/:id",
+    "method": "get",
+    "test": {
+      "params": {
+        "id": "119169482"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["comment", "event_id"]
+      }
+    }
+  },
+  "postEventComment": {
+    "resource": "https://api.meetup.com/2/event_comment",
+    "method": "post"
+  },
+  "deleteEventComment": {
+    "resource": "https://api.meetup.com/2/event_comment/:id",
+    "method": "delete"
+  },
+  "postEventCommentSubscribe": {
+    "resource": "https://api.meetup.com/2/event_comment_subscribe/:id",
+    "method": "post"
+  },
+  "deleteEventCommentSubscribe": {
+    "resource": "https://api.meetup.com/2/event_comment_subscribe/:id",
+    "method": "delete"
+  },
+  "postEventCommentFlag": {
+    "resource": "https://api.meetup.com/2/event_comment_flag",
+    "method": "post"
+  },
+  "getEventCommentLikes": {
+    "resource": "https://api.meetup.com/2/event_comment_likes",
+    "method": "get",
+    "test": {
+      "params": {
+        "comment_id": "113951632"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "postEventCommentLike": {
+    "resource": "https://api.meetup.com/2/event_comment_like/:id",
+    "method": "post"
+  },
+  "deleteEventCommentLike": {
+    "resource": "https://api.meetup.com/2/event_comment_like/:id",
+    "method": "delete"
+  },
+  "postEventsWatchlist": {
+    "resource": "https://api.meetup.com/:urlname/events/:id/watchlist",
+    "method": "post"
+  },
+  "deleteEventsWatchlist": {
+    "resource": "https://api.meetup.com/:urlname/events/:id/watchlist",
+    "method": "delete"
+  },
+  "getEventRatings": {
+    "resource": "https://api.meetup.com/2/event_ratings",
+    "method": "get",
+    "test": {
+      "params": {
+        "event_id": "79797122"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "postEventRating": {
+    "resource": "https://api.meetup.com/2/event_rating",
+    "method": "post"
+  },
+  "getEventAttendance": {
+    "resource": "https://api.meetup.com/:urlname/events/:id/attendance",
+    "method": "get",
+    "test": {
+      "params": {
+        "id": "79797122",
+        "urlname": "NodeJS-Argentina"
+      },
+      "return": {
+        "type": "array"
+      }
+    }
+  },
+  "takeEventAttendance": {
+    "resource": "https://api.meetup.com/:urlname/events/:id/attendance",
+    "method": "post"
+  },
+  "getActivity": {
+    "resource": "https://api.meetup.com/activity",
+    "method": "get",
+    "test": {
+      "params": {
+        "page_start": "0"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getGroups": {
+    "resource": "https://api.meetup.com/2/groups",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_id": "4603552"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getGroup": {
+    "resource": "https://api.meetup.com/:urlname",
+    "method": "get",
+    "test": {
+      "params": {
+        "urlname": "NodeJS-Argentina"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["urlname", "id"]
+      }
+    }
+  },
+  "editGroup": {
+    "resource": "https://api.meetup.com/:urlname",
+    "method": "post"
+  },
+  "postTopics": {
+    "resource": "/:urlname/topics",
+    "method": "post"
+  },
+  "deleteTopics": {
+    "resource": "/:urlname/topics",
+    "method": "delete"
+  },
+  "getSimilarGroups": {
+    "resource": "https://api.meetup.com/:urlname/similar_groups",
+    "method": "get",
+    "test": {
+      "params": {
+        "urlname": "NodeJS-Argentina"
+      },
+      "return": {
+        "type": "array"
+      }
+    }
+  },
+  "getComments": {
+    "resource": "https://api.meetup.com/comments",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_id": "4603552"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getMembers": {
+    "resource": "https://api.meetup.com/2/members",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_id": "4603552"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getMember": {
+    "resource": "https://api.meetup.com/2/member/:id",
+    "method": "get",
+    "test": {
+      "params": {
+        "id": "46861012"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["id", "name"]
+      }
+    }
+  },
+  "editMember": {
+    "resource": "https://api.meetup.com/2/member/:id",
+    "method": "post"
+  },
+  "postMemberPhoto": {
+    "resource": "https://api.meetup.com/2/member_photo",
+    "method": "post"
+  },
+  "deleteMemberPhoto": {
+    "resource": "https://api.meetup.com/2/member_photo",
+    "method": "delete"
+  },
+  "postMessage": {
+    "resource": "https://api.meetup.com/2/message",
+    "method": "post"
+  },
+  "getOEMBed": {
+    "resource": "https://api.meetup.com/oembed",
+    "method": "get",
+    "test": {
+      "params": {
+        "url": "http://www.meetup.com/NodeJS-Argentina/events/79797122/"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["type", "html"]
+      }
+    }
+  },
+  "postPhoto": {
+    "resource": "https://api.meetup.com/2/photo",
+    "method": "post"
+  },
+  "deletePhoto": {
+    "resource": "https://api.meetup.com/2/photo/:id",
+    "method": "delete"
+  },
+  "getPhotoComments": {
+    "resource": "https://api.meetup.com/2/photo_comments",
+    "method": "get",
+    "test": {
+      "params": {
+        "photo_id": "12208722"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "postPhotoComment": {
+    "resource": "https://api.meetup.com/2/photo_comment",
+    "method": "post"
+  },
+  "getPhotoAlbums": {
+    "resource": "https://api.meetup.com/2/photo_albums",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_id": "4603552"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "postPhotoAlbum": {
+    "resource": "https://api.meetup.com/2/photo_album",
+    "method": "post"
+  },
+  "getProfiles": {
+    "resource": "https://api.meetup.com/2/profiles",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_id": "4603552"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getProfile": {
+    "resource": "https://api.meetup.com/2/profile/:gid/:mid",
+    "method": "get",
+    "test": {
+      "params": {
+        "gid": "4603552",
+        "mid": "46861012"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["profile_url", "member_id"]
+      }
+    }
+  },
+  "postProfiles": {
+    "resource": "https://api.meetup.com/2/profiles",
+    "method": "post"
+  },
+  "postProfile": {
+    "resource": "https://api.meetup.com/2/profile",
+    "method": "post"
+  },
+  "editProfile": {
+    "resource": "https://api.meetup.com/2/profile/:gid/:mid",
+    "method": "post"
+  },
+  "deleteProfile": {
+    "resource": "https://api.meetup.com/2/profile/:gid/:mid",
+    "method": "delete"
+  },
+  "membershipApproval": {
+    "resource": "https://api.meetup.com/:urlname/member/approvals",
+    "method": "post"
+  },
+  "membershipDecline": {
+    "resource": "https://api.meetup.com/:urlname/member/approvals",
+    "method": "delete"
+  },
+  "postRSVP": {
+    "resource": "https://api.meetup.com/2/rsvp",
+    "method": "post"
+  },
+  "getRSVPs": {
+    "resource": "https://api.meetup.com/2/rsvps",
+    "method": "get",
+    "test": {
+      "params": {
+        "event_id": "79797122"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getRSVP": {
+    "resource": "https://api.meetup.com/2/rsvp/:id",
+    "method": "get",
+    "test": {
+      "params": {
+        "id": "520376402"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["response", "rsvp_id"]
+      }
+    }
+  },
+  "getOpenVenues": {
+    "resource": "https://api.meetup.com/2/open_venues",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_urlname": "NodeJS-Argentina"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getVenues": {
+    "resource": "https://api.meetup.com/2/venues",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_urlname": "NodeJS-Argentina"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getRecommendedVenues": {
+    "resource": "https://api.meetup.com/recommended/venues",
+    "method": "get",
+    "test": {
+      "params": {
+        "group_urlname": "NodeJS-Argentina"
+      },
+      "return": {
+        "type": "array"
+      }
+    }
+  },
+  "getTopics": {
+    "resource": "https://api.meetup.com/topics",
+    "method": "get",
+    "test": {
+      "params": {},
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getTopicCategories": {
+    "resource": "https://api.meetup.com/2/topic_categories",
+    "method": "get",
+    "test": {
+      "params": {},
+      "return": {
+        "type": "object",
+        "keys": ["results", "meta"]
+      }
+    }
+  },
+  "getRecommendedGroupTopics": {
+    "resource": "https://api.meetup.com/recommended/group_topics",
+    "method": "get",
+    "test": {
+      "params": {
+        "text": "javascript"
+      },
+      "return": {
+        "type": "array"
+      }
+    }
+  },
+  "dashboard": {
+    "resource": "https://api.meetup.com/dashboard",
+    "method": "get",
+    "test": {
+      "params": {
+
+        "fields": "stats"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["stats"]
+      }
+    }
+  },
+  "getNotifications": {
+    "resource": "https://api.meetup.com/notifications",
+    "method": "get",
+    "test": {
+      "params": {},
+      "return": {
+        "type": "array"
+      }
+    }
+  },
+  "setNotificationsRead": {
+    "resource": "https://api.meetup.com/notifications/read",
+    "method": "post"
+  },
+  "getStreamRSVPs": {
+    "resource": "ws://stream.meetup.com/2/rsvps",
+    "method": "get",
+    "test": {
+      "params": {
+        "since_mtime": "1294435118533"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["response", "member"]
+      }
+    }
+  },
+  "getStreamOpenEvents": {
+    "resource": "https://stream.meetup.com/2/open_events",
+    "method": "get",
+    "chunked": "true",
+    "test": {
+      "params": {
+        "since_mtime": "1294435118533"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["event_url", "id"]
+      }
+    }
+  },
+  "getStreamPhotos": {
+    "resource": "ws://stream.meetup.com/2/photos",
+    "method": "get",
+    "test": {
+      "params": {
+        "since_mtime": "1294435118533"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["photo_id", "photo_link"]
+      }
+    }
+  },
+  "getStreamEventComments": {
+    "resource": "ws://stream.meetup.com/2/event_comments",
+    "method": "get",
+    "test": {
+      "params": {
+        "since_mtime": "1294435118533"
+      },
+      "return": {
+        "type": "object",
+        "keys": ["id", "member"]
+      }
+    }
+  }
+}

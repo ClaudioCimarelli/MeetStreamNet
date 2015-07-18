@@ -1,0 +1,35 @@
+{
+  "name": "sassquatch",
+  "version": "1.16.2",
+  "description": "CSS foundation and framework for Meetup",
+  "main": [
+    "./sass",
+    "./css"
+  ],
+  "ignore": [
+    "Gemfile",
+    "Rakefile",
+    ".ruby-version",
+    ".bowerrc",
+    "**/*.sh",
+    "**/*.txt",
+    "**/*.lock",
+    "jekyll_docs",
+    "_site"
+  ],
+  "dependencies": {
+    "bourbon": "4.1.0"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/meetup/sassquatch",
+  "_release": "1.16.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.16.2",
+    "commit": "f9897075a873a8ad92dd8d16086ec69c6c97d122"
+  },
+  "_source": "git://github.com/meetup/sassquatch.git",
+  "_target": "~1.16.2",
+  "_originalSource": "sassquatch",
+  "_direct": true
+}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>must.js test</title>
+    <link rel="stylesheet" href="bower_components\sassquatch\sass\sassquatch.css"/>
+    <style>
+      body {
+        background:#eee;
+        padding:1em;
+      }
+    </style>
+    <script src="bower_components\jquery\jquery.min.js"></script>
+    <script src="must.js"></script>
+  </head>
+  <body>
+    <div class="doc-box rounded-all">
+      <div class="doc-content">
+        <h1>Must.js test</h1>
+      </div>
+      <div class="doc-content clearfix">
+        <div class="unit size1of4">
+          <div>
+            <h2>RSVPs</h2>
+            <a data-stream="rsvps" class="button primary" href="#">start</a>
+          </div>
+          <div>
+            <ul class="paddedList" id="rsvps"></ul>
+          </div>
+        </div>
+        <div class="unit size1of4">
+          <div>
+            <h2>Comments</h2>
+            <a data-stream="comments" class="button primary" href="#">start</a>
+          </div>
+          <div>
+            <ul class="paddedList" id="comments"></ul>
+          </div>
+        </div>
+        <div class="unit size1of4">
+          <div>
+            <h2>Photos</h2>
+            <a data-stream="photos" class="button primary" href="#">start</a>
+          </div>
+          <div>
+            <ul class="paddedList" id="comments"></ul>
+          </div>
+        </div>
+        <div class="lastUnit">
+          <div>
+            <h2>Checkins</h2>
+            <a data-stream="checkins" class="button primary" href="#">start</a>
+          </div>
+          <div>
+            <ul class="paddedList" id="checkins"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      (function($, must){
+        $(function() {
+           var currentStream
+            , currentStreamName
+            , streams = {
+              "rsvps": function() {
+                 return must.Rsvps(function(r){
+                   $("#rsvps").append("<li>"+r.member.member_name+" RSVP'd " +r.response+ " <div class='muted small'> " + r.event.event_name + "</span></li>");
+                 });
+              },
+              "comments": function() {
+                return must.Comments(function(c) {
+                   console.log(c);
+                   $("#comments").append("<li>"+c.comment+" <div class='muted small'>"+c.member.member_name+"</div></li>");
+                });
+              },
+              "photos": function() {
+                 return must.Photos(function(p) {
+                   $("#photos").append("<li><img src='"+p.thumb_link+"/></li>");
+                 });
+               },
+               "checkins": function() {
+                 return must.Checkins(function(c) {
+                  $("#checkins").append("<li>"+c.member.member_name + " checked in </li>");
+                 });
+               }
+           };
+           $(".button").on('click', function(e){
+              e.preventDefault();
+              var $btn = $(this),
+                  streamName = $btn.data().stream;
+
+              if (streamName == currentStreamName && $btn.attr('disabled')) {
+                $btn.removeAttr('disabled');
+              } else {
+                $(".button").removeAttr('disabled');
+                $btn.attr('disabled','disabled');
+              }
+
+              if (currentStream) {
+                currentStream.stop();
+              }
+
+              if ($btn.attr('disabled')) {
+                currentStreamName = streamName;
+                currentStream = streams[streamName]();
+              }
+
+              return false;
+           });
+        });
+      })(jQuery, must);
+    </script>
+  </body>
+</html>

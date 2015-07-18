@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/must/must.js"></script>
+    <script>
+      must.Rsvps(function(rsvp) {
+        $('#rsvps').prepend(
+          '<tr><td>' + rsvp.member.member_name +
+          '</td><td>' + rsvp.group.group_name +
+          '</td><td>' + (rsvp.event.time ? new Date(rsvp.event.time) : '') +
+          '</td><td>' + rsvp.group.group_city + ', ' + rsvp.group.group_country +
+          '</td></tr>'
+        );
+      });
+    </script>
+  </head>
+  <body>
+    <table><thead>
+      <tr><th>Who</th><th>What</th><th>When</th><th>Where</th></tr>
+    </thead><tbody id="rsvps">
+    </tbody></table>
+  </body>
+</html>
