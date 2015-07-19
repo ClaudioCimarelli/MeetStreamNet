@@ -1,0 +1,25 @@
+{
+  "name": "must",
+  "version": "0.1.3",
+  "main": "must.js",
+  "dependencies": {
+    "jquery": "1.9.x"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "index.html"
+  ],
+  "homepage": "https://github.com/meetup/must.js",
+  "_release": "0.1.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.3",
+    "commit": "b562ce93833c9157f277e0301c2778290ee454f6"
+  },
+  "_source": "git://github.com/meetup/must.js.git",
+  "_target": "~0.1.3",
+  "_originalSource": "must",
+  "_direct": true
+}

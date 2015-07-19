@@ -3,7 +3,9 @@ var meetup = require('../lib/meetup')(),
 
 var ovs = meetup.getStreamRSVPs()
 	.on('data', function(obj) {
+		console.log(obj);
 		if (count > 10) {
+
 			ovs.abort();
 		}
 		if (obj.response === 'yes') {

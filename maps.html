@@ -20,6 +20,8 @@ html, body,
 <script src="http://d3js.org/queue.v1.min.js"></script>
  <script src="http://d3js.org/d3.v3.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+ <script src="bower_components/jquery/jquery.min.js"></script>
+ <script src="bower_components/must/must.js"></script>
  
 
 <div id="map"></div>
@@ -36,7 +38,7 @@ html, body,
       id: 'claudius.ml99a5kb',
       accessToken: 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg'
   }).addTo(map);
-  var svg = d3.select(map.getPanes().overlayPane).append("svg").style("width", "10000").style("height", "10000"),
+  var svg = d3.select(map.getPanes().overlayPane).append("svg").style("width", "100000").style("height", "100000"),
       g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
 
@@ -50,10 +52,17 @@ html, body,
   //       var point = map.latLngToLayerPoint(new L.LatLng(y, x));
   //             this.stream.point(point.x, point.y);
   //      };
+
+ var rsvps_list = [];
+ function insertIn(rsvp){
+  rsvps_list.push(rsvp);
+  draw(null, rsvps_list);
+ }
     
- queue()
- .defer(d3.json,"circles.json")
- .await(draw)
+ must.Rsvps(function(rsvp) {
+  insertIn(rsvp);
+  //draw(null, [rsvp]);
+ });
 
  function draw(error,collection){ 
    if(error) {
@@ -61,28 +70,44 @@ html, body,
     throw error;
    }
    var feature = g.selectAll("circle")
-    .data(collection.objects)
+    .data(collection, function(d){
+      d.radius = 1;
+      return d.event.event_id;
+    })
     .enter().append("circle");
-       
    map.on("viewreset", update);
    update();
- 
+
    function update() {
     feature
-    .attr("cx", function(d){ 
-      var y = d.coordinates[1];
-      var x = d.coordinates[0];
-      return map.latLngToLayerPoint(new L.LatLng(x,y)).x;
+    .attr("cx", function(d){
+      if(d.venue){ 
+          var y = d.venue.lon;
+          var x = d.venue.lat;
+          return map.latLngToLayerPoint(new L.LatLng(x,y)).x;
+        }
+        else{
+          var y = d.group.group_lon;
+          var x = d.group.group_lat;
+          return map.latLngToLayerPoint(new L.LatLng(x,y)).x;
+        }
     } )
     .attr("cy", function(d){ 
-      var y = d.coordinates[1];
-      var x = d.coordinates[0];
-      return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
+      if(d.venue){ 
+          var y = d.venue.lon;
+          var x = d.venue.lat;
+          return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
+        }
+        else{
+          var y = d.group.group_lon;
+          var x = d.group.group_lat;
+          return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
+        }
     } )        
     .style("stroke", "black")  
     .style("opacity", ".6") 
     .style("fill", "teal")
-    .attr("r", 20);
+    .attr("r", 10);
        /*feature.attr("transform", 
          function(d) { 
            var y = d.coordinates[1];
@@ -92,7 +117,9 @@ html, body,
                            map.latLngToLayerPoint(new L.LatLng(x,y)).y + ")";
             });*/
    }
+  
  }
+  
 </script>
 </body>
 </html>
