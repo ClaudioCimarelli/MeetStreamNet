@@ -41,7 +41,8 @@ html, body, #map{
       id: 'claudius.ml99a5kb',
       accessToken: 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg'
   }).addTo(map);
-  var svg = d3.select(map.getPanes().overlayPane).append("svg").style("width", "100000").style("height", "100000"),
+  map._initPathRoot();
+  var svg = d3.select("#map").select("svg"),//d3.select(map.getPanes().overlayPane).append("svg").style("width", "100000").style("height", "100000"),
       g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
 
