@@ -5,14 +5,17 @@
 <title>MeetUP RSVPs Stream Network</title>
 
 <style>
-html, body,
- svg, g, #map{
+html, body, #map{
         height: 100%;
         width: 100%;
     }
-    body, svg{
+    body{
         margin: 0;
     }
+    svg {
+        position: relative;
+      }
+
    
 </style>
 <body>
@@ -53,14 +56,32 @@ html, body,
   //             this.stream.point(point.x, point.y);
   //      };
 
- var rsvps_list = [];
- function insertIn(rsvp){
-  rsvps_list.push(rsvp);
-  draw(null, rsvps_list);
+ var events_id_list = [];
+ var events_list = new Map();
+ function addTo_eventList(rsvp){
+  if(rsvp.response !== 'yes') return; 
+  var id = rsvp.event.event_id;
+  var event = events_list.get(id);
+  if(event === undefined){
+    var x = rsvp.venue.lat;
+    var y = rsvp.venue.lon;
+    var coords = new L.LatLng(x,y);
+    event = {
+      'event_id': id,
+      'rsvp_yes': 0,
+      'lat': coords.lat,
+      'lon': coords.lng,
+      'time': rsvp.event.time
+    }
+    events_list.set(id,event);
+    events_id_list.push(id);
+  }
+  event.rsvp_yes++;
+  draw(null, events_id_list);
  }
     
  must.Rsvps(function(rsvp) {
-  insertIn(rsvp);
+  addTo_eventList(rsvp);
   //draw(null, [rsvp]);
  });
 
@@ -70,44 +91,31 @@ html, body,
     throw error;
    }
    var feature = g.selectAll("circle")
-    .data(collection, function(d){
-      d.radius = 1;
-      return d.event.event_id;
-    })
+    .data(collection)
     .enter().append("circle");
+
    map.on("viewreset", update);
    update();
 
    function update() {
     feature
     .attr("cx", function(d){
-      if(d.venue){ 
-          var y = d.venue.lon;
-          var x = d.venue.lat;
-          return map.latLngToLayerPoint(new L.LatLng(x,y)).x;
-        }
-        else{
-          var y = d.group.group_lon;
-          var x = d.group.group_lat;
-          return map.latLngToLayerPoint(new L.LatLng(x,y)).x;
-        }
+      var x = events_list.get(d).lat;
+      var y = events_list.get(d).lon;
+      return map.latLngToLayerPoint(new L.LatLng(x,y)).x;
     } )
-    .attr("cy", function(d){ 
-      if(d.venue){ 
-          var y = d.venue.lon;
-          var x = d.venue.lat;
-          return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
-        }
-        else{
-          var y = d.group.group_lon;
-          var x = d.group.group_lat;
-          return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
-        }
+    .attr("cy", function(d){
+      var y = events_list.get(d).lon;
+      var x = events_list.get(d).lat;
+      return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
     } )        
     .style("stroke", "black")  
     .style("opacity", ".6") 
     .style("fill", "teal")
-    .attr("r", 10);
+    .attr("r", function(d){
+      var rsvps = events_list.get(d).rsvp_yes;
+      return 2*rsvps;
+    });
        /*feature.attr("transform", 
          function(d) { 
            var y = d.coordinates[1];
