@@ -32,22 +32,41 @@ html, body, #map{
 
 
 <script>
-
-  var map = new L.Map("map", {center: [41.8858, 12.4822], zoom: 6});
-  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+/* LEAFLET MAP LAYERS */
+  var street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
       attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-      maxZoom: 12,
+      maxZoom: 18,
       minZoom: 2,
       id: 'claudius.ml99a5kb',
       accessToken: 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg'
-  }).addTo(map);
+  });
+  var light = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      maxZoom: 18,
+      minZoom: 2,
+      id: 'claudius.momifm3d',
+      accessToken: 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg'
+  });
+
+  var map = new L.Map("map", {
+    center: [41.8858, 12.4822],
+    zoom: 6,
+    layers: [light]
+  });
+
+  var baseMaps = {
+    'Light' : light,
+    'Street' : street
+  }
+
+  L.control.layers(baseMaps).addTo(map);
+
+  /*init SVG Layer */
   map._initPathRoot();
-  var svg = d3.select("#map").select("svg"),//d3.select(map.getPanes().overlayPane).append("svg").style("width", "100000").style("height", "100000"),
-      g = svg.append("g").attr("class", "leaflet-zoom-hide");
+  var svg = d3.select("#map").select("svg"),//d3.select(map.getPanes().overlayPane).append("svg
+      g = svg.append("g").attr("class", "leaflet-zoom-hide"); // when the user zooms in or out you need to reset the view
 
-
-    // when the user zooms in or out you need to reset
-          // the view
+/* code for TopoJson */
   // var transform = d3.geo.transform({
   //         point: projectPoint
   //     });
@@ -57,6 +76,7 @@ html, body, #map{
   //             this.stream.point(point.x, point.y);
   //      };
 
+/* initialize data structures to store events for D3 data nodes*/
  var events_id_list = [];
  var events_list = new Map();
  function addTo_eventList(rsvp){
@@ -80,12 +100,12 @@ html, body, #map{
   event.rsvp_yes++;
   draw(null, events_id_list);
  }
-    
+ /* CORE STREAMING part, 
+    recall must client to get streamed data of rsvp objects */   
  must.Rsvps(function(rsvp) {
   addTo_eventList(rsvp);
-  //draw(null, [rsvp]);
  });
-
+/* function to set up  the drawing of NEW elements ENTERING the dataset */
  function draw(error,collection){ 
    if(error) {
     console.err(error);
@@ -98,6 +118,7 @@ html, body, #map{
    map.on("viewreset", update);
    update();
 
+/* update drawing on ZOOM event and new object in dataset */
    function update() {
     feature
     .attr("cx", function(d){

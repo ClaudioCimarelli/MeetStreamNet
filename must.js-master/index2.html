@@ -5,6 +5,7 @@
     <script>
       must.Rsvps(function(rsvp) {
         $('#rsvps').prepend(
+          '<tr><td>' + rsvp.event.event_id +
           '<tr><td>' + rsvp.member.member_name +
           '</td><td>' + rsvp.group.group_name +
           '</td><td>' + (rsvp.event.time ? new Date(rsvp.event.time) : '') +
@@ -16,7 +17,7 @@
   </head>
   <body>
     <table><thead>
-      <tr><th>Who</th><th>What</th><th>When</th><th>Where</th></tr>
+      <tr><th>ID</th><th>Who</th><th>What</th><th>When</th><th>Where</th></tr>
     </thead><tbody id="rsvps">
     </tbody></table>
   </body>
