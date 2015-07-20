@@ -1,47 +1,59 @@
 
 <!DOCTYPE html>
 <html lang="en">
+<head>
 <meta charset="utf-8">
+<meta name="description" content="A map of streamed data for RSVPs on MeetUP platform">
+<meta name="keywords" content="D3,Leaflet, Chart, Meetup, Streaming">
+<meta name="author" content="Edoardo Basili - Claudio Cimarelli">
 <title>MeetUP RSVPs Stream Network</title>
 
 <style>
 html, body, #map{
         height: 100%;
         width: 100%;
-    }
+      }
     body{
         margin: 0;
-    }
+      }
     svg {
         position: relative;
       }
 
+    .bubble :hover {
+        stroke: #000;
+      }
+
+
    
 </style>
-<body>
+
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
 <script src="http://d3js.org/queue.v1.min.js"></script>
  <script src="http://d3js.org/d3.v3.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
  <script src="bower_components/jquery/jquery.min.js"></script>
  <script src="bower_components/must/must.js"></script>
- 
 
-<div id="map"></div>
+</head>
+<body>
 
-
+  <div id="map"></div>
 
 <script>
+
+"use strict";
+
 /* LEAFLET MAP LAYERS */
   var street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a> © <em>Authors: Basili &amp Cimarelli</em>',
       maxZoom: 18,
       minZoom: 2,
       id: 'claudius.ml99a5kb',
       accessToken: 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg'
   });
   var light = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a> Code Authors: © <em>Basili &amp Cimarelli</em>',
       maxZoom: 18,
       minZoom: 2,
       id: 'claudius.momifm3d',
@@ -50,7 +62,7 @@ html, body, #map{
 
   var map = new L.Map("map", {
     center: [41.8858, 12.4822],
-    zoom: 2,
+    zoom: 3,
     layers: [light]
   });
 
@@ -64,7 +76,7 @@ html, body, #map{
   /*init SVG Layer */
   map._initPathRoot();
   var svg = d3.select("#map").select("svg"),//d3.select(map.getPanes().overlayPane).append("svg
-      g = svg.append("g").attr("class", "leaflet-zoom-hide"); // when the user zooms in or out you need to reset the view
+      g = svg.append("g").attr("class", "leaflet-zoom-hide bubble"); // when the user zooms in or out you need to reset the view
 
 /* code for TopoJson */
   // var transform = d3.geo.transform({
@@ -80,7 +92,9 @@ html, body, #map{
  var events_id_list = [];
  var events_list = new Map();
  function addTo_eventList(rsvp){
-  if(rsvp.response !== 'yes') return; 
+  if(rsvp.response !== 'yes' || 
+    rsvp.venue === undefined ||
+    (rsvp.venue.lat === 0 && rsvp.venue.lon ===0)) return; 
   var id = rsvp.event.event_id;
   var event = events_list.get(id);
   if(event === undefined){
@@ -89,10 +103,12 @@ html, body, #map{
     var coords = new L.LatLng(x,y);
     event = {
       'event_id': id,
+      'name' : rsvp.event.event_name,
+      'time': rsvp.event.time,
+      'url': rsvp.event.event_url,
       'rsvp_yes': 0,
       'lat': coords.lat,
-      'lon': coords.lng,
-      'time': rsvp.event.time
+      'lon': coords.lng
     }
     events_list.set(id,event);
     events_id_list.push(id);
@@ -100,13 +116,18 @@ html, body, #map{
   event.rsvp_yes++;
   draw(null, events_id_list);
  }
+ 
  /* CORE STREAMING part, 
     recall must client to get streamed data of rsvp objects */   
  must.Rsvps(function(rsvp) {
   addTo_eventList(rsvp);
  });
+
+
 /* function to set up  the drawing of NEW elements ENTERING the dataset */
+
  function draw(error,collection){ 
+  "use strict";
    if(error) {
     console.err(error);
     throw error;
@@ -114,12 +135,21 @@ html, body, #map{
    var feature = g.selectAll("circle")
     .data(collection)
     .enter().append("circle");
+    feature
+    .append("title")
+      .text(function(d) {
+        var event = events_list.get(d);
+        return event.name
+            + "\nRSVPs Number : " + event.rsvp_yes;
+      });
 
    map.on("viewreset", update);
    update();
 
 /* update drawing on ZOOM event and new object in dataset */
+
    function update() {
+    "use strict";
     feature
     .attr("cx", function(d){
       var x = events_list.get(d).lat;
@@ -130,8 +160,7 @@ html, body, #map{
       var y = events_list.get(d).lon;
       var x = events_list.get(d).lat;
       return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
-    } )        
-    .style("stroke", "black")  
+    } )
     .style("opacity", ".6") 
     .style("fill", "teal")
     .attr("r", function(d){
