@@ -1,8 +1,4 @@
-function eventid(error,eventid,handleData,userkey){ 
-    if(error) {
-    	console.err(error);
-    	throw error;
-    }
+function get_by_eventid(eventid,handleData,userkey){ 
     var id = eventid;
     var key = userkey || '9796e202068fb23423157831262a';
 	$.ajax({

@@ -1,12 +1,13 @@
 <html>
   <head>
     <script src="bower_components/jquery/jquery.min.js"></script>
-    <script src="eventid.js"></script>
+    <script src="events_api.js"></script>
   </head>
   <body>
     <script type="text/javascript">
-      eventid(null,'224029493',function(doc) {
-        alert(JSON.stringify(doc));
+      get_by_eventid('224029493',function(doc) {
+        //alert(JSON.stringify(doc));
+        console.log(doc.yes_rsvp_count);
       });
     </script>
   </body>
