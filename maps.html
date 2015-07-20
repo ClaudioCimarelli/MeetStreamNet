@@ -129,11 +129,13 @@ html, body, #map{
       'lon': coords.lng,
       'counter':1
     }
+    
+    /* get the real number of rsvps*/
     var callback = function(doc){
       event.rsvp_yes = Number(doc.yes_rsvp_count);
     }
-    /* get the real number of rsvps*/
     get_by_eventid(id, callback);
+    /*push the new discovered event into the map*/
     events_list.set(id,event);
     events_id_list.push(id);
   }
