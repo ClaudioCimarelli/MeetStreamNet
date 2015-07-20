@@ -129,10 +129,11 @@ html, body, #map{
       'lon': coords.lng,
       'counter':1
     }
+    var callback = function(doc){
+      event.rsvp_yes = Number(doc.yes_rsvp_count);
+    }
     /* get the real number of rsvps*/
-    get_by_eventid(id, function(doc){      
-        if (doc) console.dir(doc);//event.rsvp_yes = Number(doc.yes_rsvp_count);
-    });
+    get_by_eventid(id, callback);
     events_list.set(id,event);
     events_id_list.push(id);
   }
@@ -149,6 +150,10 @@ html, body, #map{
 
  function draw(collection){ 
   "use strict";
+
+  var radius = d3.scale.sqrt()
+    .domain([0, 700])
+    .range([1, 10]);
 
    var feature = g.selectAll("circle").data(collection);
 /* append svg circle element and text tip */
@@ -186,7 +191,7 @@ html, body, #map{
     .style("fill", "teal")
     .attr("r", function(d){
       var rsvps = events_list.get(d).rsvp_yes;
-      return 2*rsvps;
+      return radius(rsvps);
     });
 
     /*update text TIP */
