@@ -1,6 +1,6 @@
 function get_by_eventid(eventid,handleData,userkey){ 
     var id = eventid;
-    var key = userkey || '9796e202068fb23423157831262a';
+    var key = userkey || '52f2a7670c33a1e4634122a4e9';
 	$.ajax({
 		url: 'https://api.meetup.com/2/event/'+id+'?key='+key+'&sign=true',
 		dataType: 'JSONP',
