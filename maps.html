@@ -130,9 +130,9 @@ html, body, #map{
       'counter':1
     }
     /* get the real number of rsvps*/
-    /*get_by_eventid(id, function(doc){      
-        event.rsvp_yes = doc.yes_rsvp_count;
-    });*/
+    get_by_eventid(id, function(doc){      
+        if (doc) console.dir(doc);//event.rsvp_yes = Number(doc.yes_rsvp_count);
+    });
     events_list.set(id,event);
     events_id_list.push(id);
   }
