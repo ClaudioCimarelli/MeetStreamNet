@@ -70,7 +70,7 @@ html, body, #map{
 
   var map = new L.Map("map", {
     'center': [41.8858, 12.4822],
-    'zoom': 3,
+    'zoom': 2,
     'layers': [light] //default layer
   });
 
@@ -118,6 +118,7 @@ html, body, #map{
 
   var id = rsvp.event.event_id;
   var event = events_list.get(id);
+
   if(event === undefined){
        
     /* callback to get the actual event object*/
@@ -136,23 +137,31 @@ html, body, #map{
       'lat': doc.venue.lat,
       'lon': doc.venue.lon,
       'counter':1
-    }             
+    }
+
+    if(doc.duration)
+      newEvent.duration = doc.duration;
+    else
+      newEvent.duration = 10800000;
+
     /*push the new discovered event into the map*/
       events_list.set(doc.id, newEvent);
       draw_onRsvp(doc.id);
       waiting_on_get.delete(doc.id);
-    }
-    if(!waiting_on_get.has(id)){
+  }
+
+  if(!waiting_on_get.has(id)){
       waiting_on_get.add(id);
       var point = new L.LatLng(rsvp.venue.lat, rsvp.venue.lon);
       events_id_list.push({
         'id': id,
-        'point': point
+        'point': point,
+        'time': rsvp.event.time
       });
       draw_enter(events_id_list);
-    }    
+    }
     get_by_eventid(id, callback);   
-          
+
   }
   else {
     event.counter++;
@@ -182,13 +191,13 @@ function draw_enter(collection){
    })
    .attr("cx", function(d){
       return map.latLngToLayerPoint(d.point).x;
-    } )
+    })
     .attr("cy", function(d){
       return map.latLngToLayerPoint(d.point).y;
-    } )   
-    .style("opacity", ".5") 
-    .style("fill", "teal")
-    .append("title");
+    })
+    .append("title")
+    .style("opacity", ".5")
+    .style("fill", "teal");
 
    map.on("viewreset", update);
 
@@ -198,13 +207,9 @@ function draw_enter(collection){
     /*update circles positions*/
     feature
     .attr("cx", function(d){
-      /*var x = events_list.get(d).lat;
-      var y = events_list.get(d).lon;*/
       return map.latLngToLayerPoint(d.point).x;
     } )
     .attr("cy", function(d){
-      /*var y = events_list.get(d).lon;
-      var x = events_list.get(d).lat;*/
       return map.latLngToLayerPoint(d.point).y;
     } );
 
@@ -224,12 +229,17 @@ function draw_enter(collection){
 
 function draw_onRsvp(id){
   "use strict";
+
+    var date = new Date();
+    var millis = date.getTime();
+
+    var colours = ["#CC3300","#CC9900","#669900","#33CC33","#00CC66","#00CC99","#008080"];
+
+    var heatmapColour = d3.scale.linear()
+    .domain(d3.range(0, 1))
+    .range(colours);
+
     var circle = g.select("#id"+id);
-    circle
-    .attr("r", function(d){
-      var rsvps = events_list.get(d.id).rsvp_yes;
-      return radius(rsvps);
-    });
 /*UPDATE TIP*/
     circle.select("title")
       .text(function(d) {
@@ -242,7 +252,8 @@ function draw_onRsvp(id){
 
 /* blink events that received an RSVP */
   function blink_transition(event_id){
-    "use strict";  
+    "use strict";
+
       circle
       .style("opacity", "0.9")
       .style("fill", "yellow")
@@ -260,10 +271,13 @@ function draw_onRsvp(id){
       var rsvps = events_list.get(d.id).rsvp_yes;
       return radius(rsvps);
       })
-      .each('end', function() {
+      .each('end', function(d) {
         circle
         .style("opacity", ".5") 
-        .style("fill", "teal");
+        .transition()
+        .ease('linear')
+        .duration(1000)
+        .style("fill", heatmapColour((d.time-millis)/200000000));
       });
   }
 
