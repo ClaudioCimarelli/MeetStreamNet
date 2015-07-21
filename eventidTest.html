@@ -2,14 +2,12 @@
   <head>
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="events_api.js"></script>
+    <script src="search_events.js"></script>
   </head>
   <body>
     <script type="text/javascript">
-      get_by_eventid('224029493',function(err,doc) {
-        //alert(JSON.stringify(doc));
-        if(err)console.err(err);
-        console.log(doc.yes_rsvp_count);
-      });
+    var point = [41.8858, 12.4822];
+    search_draw(point[0], point[1], 20);
     </script>
   </body>
 </html>
