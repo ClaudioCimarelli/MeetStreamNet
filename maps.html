@@ -108,6 +108,7 @@ html, body, #map{
 /* initialize data structures to store events for D3 data nodes*/
  var events_id_list = [];
  var events_list = new Map();
+ var waiting_on_get = new Set();
 
  function addTo_eventsList(rsvp){
 
@@ -120,7 +121,8 @@ html, body, #map{
   if(event === undefined){
        
     /* callback to get the actual event object*/
-  var callback = function(doc){
+  var callback = function(err, doc){
+    if(err) return console.log(err);
 
      var newEvent = {
       'event_id': doc.id,
@@ -132,13 +134,18 @@ html, body, #map{
       'lat': doc.venue.lat,
       'lon': doc.venue.lon,
       'counter':1
-    }         
-      events_id_list.push(doc.id); 
-      draw_enter(events_id_list, newEvent);
+    }             
     /*push the new discovered event into the map*/
       events_list.set(doc.id, newEvent);
       draw_onRsvp(doc.id);
+      waiting_on_get.delete(doc.id);
     }
+    if(!waiting_on_get.has(id)){
+      waiting_on_get.add(id);
+      events_id_list.push(id);
+      var point = new L.LatLng(rsvp.venue.lat, rsvp.venue.lon);
+      draw_enter(events_id_list, point);
+    }    
     get_by_eventid(id, callback);   
           
   }
@@ -154,16 +161,26 @@ var radius = d3.scale.sqrt()
     .domain([0, 700])
     .range([1, 15]);
 
- function draw_enter(collection, doc){
+function draw_enter(collection, point){
   "use strict"; 
 
-   var feature = g.selectAll("circle").data(collection,function(d){return d;});
+   var feature =
+    g.selectAll("circle")
+    .data(collection,function(d){
+      return d;
+    });
    var enterCircles = feature.enter();
 /* append svg circle element and text tip */
    enterCircles
    .append("circle").attr('id', function(d){
     return 'id'+d;
-   })   
+   })
+   .attr("cx", function(d){
+      return map.latLngToLayerPoint(point).x;
+    } )
+    .attr("cy", function(d){
+      return map.latLngToLayerPoint(point).y;
+    } )   
     .style("opacity", ".5") 
     .style("fill", "teal")
     .append("title");
@@ -171,10 +188,8 @@ var radius = d3.scale.sqrt()
    map.on("viewreset", update);
 
 /* update drawing on ZOOM event and new rsvp object in dataset */
-
    function update() {
     "use strict";
-
     /*update circles positions*/
     feature
     .attr("cx", function(d){
@@ -186,17 +201,7 @@ var radius = d3.scale.sqrt()
       var y = events_list.get(d).lon;
       var x = events_list.get(d).lat;
       return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
-    } )
-    .attr("r", function(d){
-      var rsvps = events_list.get(d).rsvp_yes;
-      return radius(rsvps);
-    })
-    .select("title")
-    .text(function(d) {
-        var event = events_list.get(d);
-        return event.name
-            + "\nRSVPs Number : " + event.rsvp_yes;
-      });
+    } );
 
       //* alternative way to traslate circle elements*/
        /*feature.attr("transform", 
@@ -210,23 +215,17 @@ var radius = d3.scale.sqrt()
    }  
 }
 
- function draw_onRsvp(id){
+/*update radius and tip on rsvp received */
 
+function draw_onRsvp(id){
+  "use strict";
     var circle = g.select("#id"+id);
     circle
-    .attr("cx", function(d){
-      var x = events_list.get(d).lat;
-      var y = events_list.get(d).lon;
-      return map.latLngToLayerPoint(new L.LatLng(x,y)).x;
-    } )
-    .attr("cy", function(d){
-      var y = events_list.get(d).lon;
-      var x = events_list.get(d).lat;
-      return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
-    } );
-   
-
-
+    .attr("r", function(d){
+      var rsvps = events_list.get(d).rsvp_yes;
+      return radius(rsvps);
+    });
+/*UPDATE TIP*/
     circle.select("title")
       .text(function(d) {
         var event = events_list.get(d);
@@ -234,9 +233,11 @@ var radius = d3.scale.sqrt()
             + "\nRSVPs Number : " + event.rsvp_yes;
       });
 
-    blink_transition(id);
+    blink_transition(id); //start transition on rsvp
 
-    function blink_transition(event_id){     
+/* blink events that received an RSVP */
+  function blink_transition(event_id){
+    "use strict";  
       circle
       .style("opacity", "0.9")
       .style("fill", "yellow")

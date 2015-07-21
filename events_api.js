@@ -12,14 +12,9 @@ function get_by_eventid(eventid,callback){
 	}
     var id = eventid;
 	$.ajax({
-		'url': 'https://api.meetup.com/2/event/',//+id+'?key='+key+'&sign=true',
+		'url': 'https://api.meetup.com/2/event/'+id+'?key='+key+'&sign=true',
 		'dataType': 'jsonp',
-		'type': 'GET',
-		'data':{
-			'id': id,
-			'key': key,
-			'sign': true
-		},
+		'type': 'GET',		
 		'success': function(data){
 			callback(null,data);
 		},
