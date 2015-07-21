@@ -108,69 +108,67 @@ html, body, #map{
 /* initialize data structures to store events for D3 data nodes*/
  var events_id_list = [];
  var events_list = new Map();
+
  function addTo_eventsList(rsvp){
+
   if(rsvp.response !== 'yes' || 
     rsvp.venue === undefined ||
     (rsvp.venue.lat === 0 && rsvp.venue.lon ===0)) return; 
+
   var id = rsvp.event.event_id;
   var event = events_list.get(id);
   if(event === undefined){
-    var x = rsvp.venue.lat;
-    var y = rsvp.venue.lon;
-    var coords = new L.LatLng(x,y);
-    event = {
-      'event_id': id,
-      'name' : rsvp.event.event_name,
-      'time': rsvp.event.time,
-      'url': rsvp.event.event_url,
-      'group_id' : 0,
-      'rsvp_yes': 1,
-      'lat': coords.lat,
-      'lon': coords.lng,
+       
+    /* callback to get the actual event object*/
+  var callback = function(doc){
+
+     var newEvent = {
+      'event_id': doc.id,
+      'name' : doc.name,
+      'time': doc.time,
+      'url': doc.event_url,
+      'group_id' : doc.group.id,
+      'rsvp_yes': doc.yes_rsvp_count,
+      'lat': doc.venue.lat,
+      'lon': doc.venue.lon,
       'counter':1
-    }
-    
-    /* get the real number of rsvps*/
-    var callback = function(doc){
-      event.rsvp_yes = Number(doc.yes_rsvp_count);
-    }
-    get_by_eventid(id, callback);
+    }         
+      events_id_list.push(doc.id); 
+      draw_enter(events_id_list, newEvent);
     /*push the new discovered event into the map*/
-    events_list.set(id,event);
-    events_id_list.push(id);
+      events_list.set(doc.id, newEvent);
+      draw_onRsvp(doc.id);
+    }
+    get_by_eventid(id, callback);   
+          
   }
   else {
     event.counter++;
     event.rsvp_yes++;
+    draw_onRsvp(id);
   }
-  draw(events_id_list);
  }
- 
- 
 
 /* function to set up  the drawing of NEW elements ENTERING the dataset */
-
- function draw(collection){ 
-  "use strict";
-
-  var radius = d3.scale.sqrt()
+var radius = d3.scale.sqrt()
     .domain([0, 700])
-    .range([1, 10]);
+    .range([1, 15]);
 
-   var feature = g.selectAll("circle").data(collection);
+ function draw_enter(collection, doc){
+  "use strict"; 
+
+   var feature = g.selectAll("circle").data(collection,function(d){return d;});
+   var enterCircles = feature.enter();
 /* append svg circle element and text tip */
-   feature.enter()
-   .append("circle")
-   .append("title")
-      .text(function(d) {
-        var event = events_list.get(d);
-        return event.name
-            + "\nRSVPs Number : " + event.rsvp_yes;
-      });
-   
+   enterCircles
+   .append("circle").attr('id', function(d){
+    return 'id'+d;
+   })   
+    .style("opacity", ".5") 
+    .style("fill", "teal")
+    .append("title");
 
    map.on("viewreset", update);
-   update();
 
 /* update drawing on ZOOM event and new rsvp object in dataset */
 
@@ -189,16 +187,12 @@ html, body, #map{
       var x = events_list.get(d).lat;
       return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
     } )
-    .style("opacity", ".6") 
-    .style("fill", "teal")
     .attr("r", function(d){
       var rsvps = events_list.get(d).rsvp_yes;
       return radius(rsvps);
-    });
-
-    /*update text TIP */
-     feature.select("title")
-      .text(function(d) {
+    })
+    .select("title")
+    .text(function(d) {
         var event = events_list.get(d);
         return event.name
             + "\nRSVPs Number : " + event.rsvp_yes;
@@ -213,10 +207,62 @@ html, body, #map{
                            map.latLngToLayerPoint(new L.LatLng(x,y)).x + "," +
                            map.latLngToLayerPoint(new L.LatLng(x,y)).y + ")";
             });*/
-   }
-  
- }
-  
+   }  
+}
+
+ function draw_onRsvp(id){
+
+    var circle = g.select("#id"+id);
+    circle
+    .attr("cx", function(d){
+      var x = events_list.get(d).lat;
+      var y = events_list.get(d).lon;
+      return map.latLngToLayerPoint(new L.LatLng(x,y)).x;
+    } )
+    .attr("cy", function(d){
+      var y = events_list.get(d).lon;
+      var x = events_list.get(d).lat;
+      return map.latLngToLayerPoint(new L.LatLng(x,y)).y;
+    } );
+   
+
+
+    circle.select("title")
+      .text(function(d) {
+        var event = events_list.get(d);
+        return event.name
+            + "\nRSVPs Number : " + event.rsvp_yes;
+      });
+
+    blink_transition(id);
+
+    function blink_transition(event_id){     
+      circle
+      .style("opacity", "0.9")
+      .style("fill", "yellow")
+      .transition()
+      .ease('linear')
+      .duration(500)
+      .attr("r", function(d){
+      var rsvps = events_list.get(d).rsvp_yes;
+      return radius(rsvps)+5;
+      })
+      .transition()
+      .ease('linear')
+      .duration(200)
+      .attr("r", function(d){
+      var rsvps = events_list.get(d).rsvp_yes;
+      return radius(rsvps);
+      })
+      .each('end', function() {
+        circle
+        .style("opacity", ".5") 
+        .style("fill", "teal");
+      });
+  }
+
+}
+
 </script>
 </body>
 </html>
