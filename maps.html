@@ -196,8 +196,8 @@ function draw_enter(collection){
       return map.latLngToLayerPoint(d.point).y;
     })
     .append("title")
-    .style("opacity", ".5")
-    .style("fill", "teal");
+    .style("opacity", ".5");
+    //.style("fill", "teal");
 
    map.on("viewreset", update);
 
@@ -228,16 +228,7 @@ function draw_enter(collection){
 /*update radius and tip on rsvp received */
 
 function draw_onRsvp(id){
-  "use strict";
-
-    var date = new Date();
-    var millis = date.getTime();
-
-    var colours = ["#CC3300","#CC9900","#669900","#33CC33","#00CC66","#00CC99","#008080"];
-
-    var heatmapColour = d3.scale.linear()
-    .domain(d3.range(0, 1))
-    .range(colours);
+  "use strict";   
 
     var circle = g.select("#id"+id);
 /*UPDATE TIP*/
@@ -249,10 +240,11 @@ function draw_onRsvp(id){
       });
 
     blink_transition(id); //start transition on rsvp
-
+}
 /* blink events that received an RSVP */
-  function blink_transition(event_id){
+  function blink_transition(id){
     "use strict";
+     var circle = g.select("#id"+id);
 
       circle
       .style("opacity", "0.9")
@@ -272,16 +264,31 @@ function draw_onRsvp(id){
       return radius(rsvps);
       })
       .each('end', function(d) {
-        circle
+        timeTransition(d.id);
+      });
+        
+  }
+
+  function timeTransition(id){
+
+    var date = new Date();
+    var millis = date.getTime();
+
+    var colours = ["#CC3300","#CC9900","#669900","#33CC33","#00CC66","#00CC99","#008080"].reverse();
+
+    var heatmapColour = d3.scale.linear()
+    .domain([0,1])
+    .range(colours);
+
+     var circle = g.select("#id"+id);
+     circle
         .style("opacity", ".5") 
         .transition()
         .ease('linear')
         .duration(1000)
-        .style("fill", heatmapColour((d.time-millis)/200000000));
-      });
-  }
+        .style("fill", heatmapColour(2000000));
 
-}
+  }
 
 </script>
 </body>
