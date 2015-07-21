@@ -34,7 +34,9 @@ html, body, #map{
  <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
  <script src="bower_components/jquery/jquery.min.js"></script>
  <script src="bower_components/must/must.js"></script>
+ <script src="bower_components/strftime/strftime-min.js"></script>
  <script src="events_api.js"></script>
+ <script src="search_events.js"></script>
 
 </head>
 <body>
@@ -235,8 +237,11 @@ function draw_onRsvp(id){
     circle.select("title")
       .text(function(d) {
         var event = events_list.get(d.id);
+        var date = new Date();
         return event.name
-            + "\nRSVPs Number : " + event.rsvp_yes;
+            + "\nRSVPs Number : " + event.rsvp_yes
+            + "\nStart date : " + strftime('%F %R\n', new Date(d.time))
+            + "\nColor : blue-->proposed || red-->upcoming";
       });
 
     blink_transition(id); //start transition on rsvp
@@ -245,6 +250,8 @@ function draw_onRsvp(id){
   function blink_transition(id){
     "use strict";
      var circle = g.select("#id"+id);
+
+     circle.interrupt();
 
       circle
       .style("opacity", "0.9")
@@ -272,11 +279,10 @@ function draw_onRsvp(id){
   function timeTransition(id){
 
     var date = new Date();
-    var millis = date.getTime();
 
-    var colours = ["#CC3300","#CC9900","#669900","#33CC33","#00CC66","#00CC99","#008080"].reverse();
+    var colours = ["blue","red"];
 
-    var heatmapColour = d3.scale.linear()
+    var heatmapColour = d3.scale.pow(0.3)
     .domain([0,1])
     .range(colours);
 
@@ -285,8 +291,12 @@ function draw_onRsvp(id){
         .style("opacity", ".5") 
         .transition()
         .ease('linear')
-        .duration(1000)
-        .style("fill", heatmapColour(2000000));
+        .duration(function(d) {
+          return d.time-date.getTime();
+        })
+        .styleTween("fill", function(d) {
+          return d3.interpolateRgb(heatmapColour(Math.exp((date.getTime()-d.time)/5e8)),"red");
+        });
 
   }
 
