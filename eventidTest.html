@@ -5,8 +5,9 @@
   </head>
   <body>
     <script type="text/javascript">
-      get_by_eventid('224029493',function(doc) {
+      get_by_eventid('224029493',function(err,doc) {
         //alert(JSON.stringify(doc));
+        if(err)console.err(err);
         console.log(doc.yes_rsvp_count);
       });
     </script>
