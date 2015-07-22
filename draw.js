@@ -117,13 +117,23 @@ function draw_enter(collection){
    function update() {
     "use strict";
     /*update circles positions*/
+    g
+    .style("opacity", 0);
+
     feature
-    .attr("cx", function(d){
+    .each(function(){
+      d3.select(this)
+      .attr("cx", function(d){
       return map.latLngToLayerPoint(d.point).x;
     } )
     .attr("cy", function(d){
       return map.latLngToLayerPoint(d.point).y;
     } );
+    });
+
+    g
+    .style("opacity", null);
+    
 
       //* alternative way to traslate circle elements*/
        /*feature.attr("transform", 
