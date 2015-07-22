@@ -37,19 +37,18 @@
   var callback = function(err, doc){
     if(err) return console.log(err);
 
-    //console.log(doc);
+    if(!doc.id) return console.log(doc);
 
     var newEvent = {
       'event_id': doc.id,
       'name' : doc.name,
       'time': doc.time,
       'url': doc.event_url,
-      'group_id' : doc.group.id,
       'rsvp_yes': doc.yes_rsvp_count,
       'lat': doc.venue.lat,
       'lon': doc.venue.lon,
       'counter':1
-    }
+    };
 
     if(doc.duration)
       newEvent.duration = doc.duration;
