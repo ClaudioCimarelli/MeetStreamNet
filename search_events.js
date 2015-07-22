@@ -4,10 +4,10 @@ function search_draw(options){
 		'lon' : options.lon || 12.4822,
 		'radius' : options.radius || 100,
 		'page': options.page || 20,
-		'offset': options.offset || 0
+		'offset': options.offset || 0,
 		'fields': options.fields || "category"
 	}
-	var limit = options.limit || 1000;
+	var limit = options.limit || 100;
 
 	if(limit< params.page) params.page = limit;
 
@@ -17,12 +17,18 @@ function search_draw(options){
 		if(err) throw err;
 		if(!data) return;
 		var results = data.results;
+		if(!results) return;
 		results = results.filter(function(doc){
 			return doc.venue !== undefined;
 		});
 		limit -= results.length;
-		console.log(results.length);
 		results.forEach(function(doc){
+			
+			var deafaultCategory = {
+				'id': 0,
+				'name' : "uncategorized",
+				'shortname': "uncategorized"
+			}
 			var newEvent = {
 				'event_id': doc.id,
 			    'name' : doc.name,
@@ -31,6 +37,7 @@ function search_draw(options){
 			    'rsvp_yes': doc.yes_rsvp_count,
 			    'lat': doc.venue.lat,
 			    'lon': doc.venue.lon,
+			    'category': doc.group.category || deafaultCategory,
 			    'counter':1
 			  } ;
 
@@ -60,13 +67,13 @@ function draw_event(event){
         'time': event.time
       });
       /*set index for category */
-      var category = newEvent.category;
+      var category = event.category;
       var category_list = category_map.get(category.id);
       if(!category_list){
 	      category_list = [];
 	      category_map.set(category.id, category_list);
 	  }	  
-      category_list.push(newEvent);
+      category_list.push(event);
       
       events_map.set(event.event_id, event);
       draw_enter(events_id_list);

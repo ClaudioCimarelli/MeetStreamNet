@@ -40,6 +40,12 @@
 
     if(!doc.id) return console.log(doc);
 
+    var deafaultCategory = {
+        'id': 0,
+        'name' : "uncategorized",
+        'shortname': "uncategorized"
+      }
+
     var newEvent = {
       'event_id': doc.id,
       'name' : doc.name,
@@ -48,7 +54,7 @@
       'rsvp_yes': doc.yes_rsvp_count,
       'lat': doc.venue.lat,
       'lon': doc.venue.lon,
-      'category': doc.group.category,
+      'category': doc.group.category || deafaultCategory,
       'counter':1
     };
 

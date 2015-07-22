@@ -10,7 +10,6 @@ function get_by_eventid(params,callback){
 		key = '9796e202068fb23423157831262a';
 		this.counter =0;
 	}
-    var id = eventid;
 	$.ajax({
 		'url': 'https://api.meetup.com/2/event/'+params.id,
 		'data':{
@@ -29,7 +28,7 @@ function get_by_eventid(params,callback){
 	});
 }
 
-function get_events_by_loc(options, callback){ 
+function get_events_by_loc(params, callback){ 
 	var key;
 	if(this.counter === undefined){
 	this.counter=0;}
@@ -47,14 +46,14 @@ function get_events_by_loc(options, callback){
 		'data':{
 			'key': key,
 			'sign':true,
-			'lat': options.lat,
-			'lon': options.lon,
-			'radius': options.radius || 100,
-			'status': options.status || 'upcoming',
-			'order': options.order|| 'distance',
-			'page': options.page || 20,
-			'offset': options.offset || 0,
-			'fields': options.fields || ""
+			'lat': params.lat,
+			'lon': params.lon,
+			'radius': params.radius || 100,
+			'status': params.status || 'upcoming',
+			'order': params.order|| 'distance',
+			'page': params.page || 20,
+			'offset': params.offset || 0,
+			'fields': params.fields || ""
 		},
 		'type': 'GET',
 		'success': function(data){
