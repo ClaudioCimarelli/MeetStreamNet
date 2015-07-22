@@ -25,8 +25,10 @@ html, body, #map{
         stroke-width: 3px;
       }
 
+    .leaflet-container {
+      cursor: auto !important;
+      }
 
-   
 </style>
 
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
@@ -90,6 +92,14 @@ html, body, #map{
   map._initPathRoot();
   var svg = d3.select("#map").select("svg"),//d3.select(map.getPanes().overlayPane).append("svg
       g = svg.append("g").attr("class", "leaflet-zoom-hide bubble"); // when the user zooms in or out you need to reset the view
+
+  map.on('contextmenu', function(e) {
+    var options = {
+      'lat' : e.latlng.lat,
+      'lon' : e.latlng.lng
+    }
+    search_draw(options);
+  });
 
 </script>
 </body>
