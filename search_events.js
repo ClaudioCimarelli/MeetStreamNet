@@ -5,6 +5,7 @@ function search_draw(options){
 		'radius' : options.radius || 100,
 		'page': options.page || 20,
 		'offset': options.offset || 0
+		'fields': options.fields || "category"
 	}
 	var limit = options.limit || 1000;
 
@@ -51,14 +52,23 @@ function search_draw(options){
 }
 
 function draw_event(event){
-	if(events_list.has(event.event_id)) return;
+	if(events_map.has(event.event_id)) return;
 	var point = new L.LatLng(event.lat, event.lon);
       events_id_list.push({
         'id': event.event_id,
         'point': point,
         'time': event.time
       });
-      events_list.set(event.event_id, event);
+      /*set index for category */
+      var category = newEvent.category;
+      var category_list = category_map.get(category.id);
+      if(!category_list){
+	      category_list = [];
+	      category_map.set(category.id, category_list);
+	  }	  
+      category_list.push(newEvent);
+      
+      events_map.set(event.event_id, event);
       draw_enter(events_id_list);
       draw_onRsvp(event.event_id);
 }

@@ -19,8 +19,9 @@
 
 /* initialize data structures to store events for D3 data nodes*/
  var events_id_list = [];
- var events_list = new Map();
+ var events_map = new Map();
  var waiting_on_get = new Set();
+ var category_map = new Map();
 
  function addTo_eventsList(rsvp){
 
@@ -29,7 +30,7 @@
     (rsvp.venue.lat === 0 && rsvp.venue.lon ===0)) return; 
 
   var id = rsvp.event.event_id;
-  var event = events_list.get(id);
+  var event = events_map.get(id);
 
   if(event === undefined){
        
@@ -47,8 +48,18 @@
       'rsvp_yes': doc.yes_rsvp_count,
       'lat': doc.venue.lat,
       'lon': doc.venue.lon,
+      'category': doc.group.category,
       'counter':1
     };
+
+    var category = newEvent.category;
+    var category_list = category_map.get(category.id);
+    if(!category_list){
+      category_list = [];
+      category_map.set(category.id, category_list);
+
+    }
+    category_list.push(newEvent);
 
     if(doc.duration)
       newEvent.duration = doc.duration;
@@ -56,7 +67,7 @@
       newEvent.duration = 10800000;
 
     /*push the new discovered event into the map*/
-      events_list.set(doc.id, newEvent);
+      events_map.set(doc.id, newEvent);
       draw_onRsvp(doc.id);
       waiting_on_get.delete(doc.id);
   }
@@ -71,7 +82,7 @@
       });
       draw_enter(events_id_list);
     }
-    get_by_eventid(id, callback);   
+    get_by_eventid({'id': id, 'fields': 'category' }, callback);   
 
   }
   else {
@@ -161,7 +172,7 @@ function draw_onRsvp(id){
 /*UPDATE TIP*/
     circle.select("title")
       .text(function(d) {
-        var event = events_list.get(d.id);
+        var event = events_map.get(d.id);
         var date = new Date();
         return event.name
             + "\nRSVPs Number : " + event.rsvp_yes
@@ -185,14 +196,14 @@ function draw_onRsvp(id){
       .ease('linear')
       .duration(500)
       .attr("r", function(d){
-      var rsvps = events_list.get(d.id).rsvp_yes;
+      var rsvps = events_map.get(d.id).rsvp_yes;
       return radius(rsvps)+5;
       })
       .transition()
       .ease('linear')
       .duration(200)
       .attr("r", function(d){
-      var rsvps = events_list.get(d.id).rsvp_yes;
+      var rsvps = events_map.get(d.id).rsvp_yes;
       return radius(rsvps);
       })
       .each('end', function(d) {
