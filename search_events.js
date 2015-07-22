@@ -1,8 +1,17 @@
 function search_draw(options){
-	var lat = options.lat || 41.8858;
-	var lon = options.lon || 12.4822;
-	var radius = options.radius || 100;
+	var params = {
+		'lat' : options.lat || 41.8858,
+		'lon' : options.lon || 12.4822,
+		'radius' : options.radius || 100,
+		'page': options.page || 20,
+		'offset': options.offset || 0
+	}
 	var limit = options.limit || 1000;
+
+	if(limit< params.page) params.page = limit;
+
+	var counter = limit/params.page; 
+
 	var callback = function(err, data){
 		if(err) throw err;
 		if(!data) return;
@@ -11,6 +20,7 @@ function search_draw(options){
 			return doc.venue !== undefined;
 		});
 		limit -= results.length;
+		console.log(results.length);
 		results.forEach(function(doc){
 			var newEvent = {
 				'event_id': doc.id,
@@ -30,13 +40,14 @@ function search_draw(options){
 			
 			 draw_event(newEvent);
 		})
-		if(data.meta.next !== "" && limit>0){
-			get_next(data.meta.next, callback);
+		params.offset++;
+		if(data.meta.next !== "" && limit>0 && params.offset<counter){			
+			get_events_by_loc(params, callback);
+			//get_next(data.meta.next, callback);
 		}
 
 	}
-	if(limit>0)
-	get_events_by_loc(lat, lon, radius, callback);
+		get_events_by_loc(params, callback);
 }
 
 function draw_event(event){

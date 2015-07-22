@@ -27,7 +27,7 @@ function get_by_eventid(eventid,callback){
 		}
 	});
 }
-function get_events_by_loc(lat, lon, radius, callback){ 
+function get_events_by_loc(options, callback){ 
 	var key;
 	if(this.counter === undefined){
 	this.counter=0;}
@@ -45,13 +45,13 @@ function get_events_by_loc(lat, lon, radius, callback){
 		'data':{
 			'key': key,
 			'sign':true,
-			'lat': lat,
-			'lon': lon,
-			'radius': radius,
-			'status': 'upcoming',
-			'order': 'distance',
-			'page': 20
-
+			'lat': options.lat,
+			'lon': options.lon,
+			'radius': options.radius || 100,
+			'status': options.status || 'upcoming',
+			'order': options.order|| 'distance',
+			'page': options.page || 20,
+			'offset': options.offset || 0
 		},
 		'type': 'GET',
 		'success': function(data){
