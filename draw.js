@@ -120,19 +120,25 @@ function draw_enter(collection){
     g
     .style("opacity", 0);
 
+    var n = feature.size();
+
     feature
-    .each(function(){
-      d3.select(this)
-      .attr("cx", function(d){
-      return map.latLngToLayerPoint(d.point).x;
-    } )
-    .attr("cy", function(d){
-      return map.latLngToLayerPoint(d.point).y;
-    } );
+    .each(function(d, i){
+        d3.select(this)
+        .attr("cx", function(d){
+        return map.latLngToLayerPoint(d.point).x;
+        } )
+      .attr("cy", function(d){
+        return map.latLngToLayerPoint(d.point).y;
+       } );
+
+      if (i === n-1){
+           g
+          .style("opacity", null);
+      }
     });
 
-    g
-    .style("opacity", null);
+    
     
 
       //* alternative way to traslate circle elements*/
