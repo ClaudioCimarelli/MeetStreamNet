@@ -31,13 +31,15 @@ html, body, #map{
 
 </style>
 
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
-<script src="http://d3js.org/queue.v1.min.js"></script>
+ <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+ <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
+ <script src="http://d3js.org/queue.v1.min.js"></script>
  <script src="http://d3js.org/d3.v3.min.js"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
  <script src="bower_components/jquery/jquery.min.js"></script>
  <script src="bower_components/must/must.js"></script>
  <script src="bower_components/strftime/strftime-min.js"></script>
+ <script src="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
  <script src="draw.js"></script>
  <script src="events_api.js"></script>
  <script src="search_events.js"></script>
@@ -85,6 +87,8 @@ html, body, #map{
     'Street' : street
   }
 
+  L.control.locate().addTo(map);
+
 /*multi layer group control added to map*/
   L.control.layers(baseMaps).addTo(map);
 
@@ -127,12 +131,7 @@ html, body, #map{
        if(!stop) addTo_eventsList(rsvp);
     });
 
-  }
-      
-
-
-
-  
+  } 
 
 </script>
 </body>
