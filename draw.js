@@ -9,14 +9,6 @@
   //             this.stream.point(point.x, point.y);
   //      };
 
-
-/* CORE STREAMING part, 
-    recall must client to get streamed data of rsvp objects */
-
- must.Rsvps(function(rsvp) {
-  addTo_eventsList(rsvp);
- });
-
 /* initialize data structures to store events for D3 data nodes*/
  var events_id_list = [];
  var events_map = new Map();
@@ -36,8 +28,8 @@
        
     /* callback to get the actual event object*/
   var callback = function(err, doc){
-    if(err) return console.log(err);
 
+    if(err) return console.log(err);
     if(!doc.id) return console.log(doc);
 
     var deafaultCategory = {
@@ -58,6 +50,7 @@
       'counter':1
     };
 
+    /*index category -> list event */
     var category = newEvent.category;
     var category_list = category_map.get(category.id);
     if(!category_list){
@@ -67,26 +60,27 @@
     }
     category_list.push(newEvent);
 
+    /* set duration of event */
     if(doc.duration)
       newEvent.duration = doc.duration;
     else
       newEvent.duration = 10800000;
 
+      var point = new L.LatLng(newEvent.lat, newEvent.lon);
+      events_id_list.push({
+        'id': id,
+        'point': point,
+        'time': newEvent.time
+      });
     /*push the new discovered event into the map*/
       events_map.set(doc.id, newEvent);
+      draw_enter(events_id_list);
       draw_onRsvp(doc.id);
       waiting_on_get.delete(doc.id);
   }
 
   if(!waiting_on_get.has(id)){
-      waiting_on_get.add(id);
-      var point = new L.LatLng(rsvp.venue.lat, rsvp.venue.lon);
-      events_id_list.push({
-        'id': id,
-        'point': point,
-        'time': rsvp.event.time
-      });
-      draw_enter(events_id_list);
+      waiting_on_get.add(id);      
     }
     get_by_eventid({'id': id, 'fields': 'category' }, callback);   
 

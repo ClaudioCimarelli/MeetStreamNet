@@ -75,7 +75,7 @@ html, body, #map{
   });
 
   var map = new L.Map("map", {
-    'center': [41.8858, 12.4822],
+    'center': [11.8858, 12.4822],
     'zoom': 2,
     'layers': [light] //default layer
   });
@@ -88,18 +88,51 @@ html, body, #map{
 /*multi layer group control added to map*/
   L.control.layers(baseMaps).addTo(map);
 
-  /*init SVG Layer */
-  map._initPathRoot();
-  var svg = d3.select("#map").select("svg"),//d3.select(map.getPanes().overlayPane).append("svg
-      g = svg.append("g").attr("class", "leaflet-zoom-hide bubble"); // when the user zooms in or out you need to reset the view
+  var stop = true;
 
-  map.on('contextmenu', function(e) {
+  queue()
+  .defer(d3.json,"categories.json")
+  .await(initDraw);
+
+  function initDraw(err, collection){
+    if(err){
+      return console.log(err);
+    }
+     /*init SVG Layer */
+    map._initPathRoot();
+    var svg = d3.select("#map").select("svg");
+
+    var categories = collection.categories;
+    svg.selectAll("g")
+      .data(categories, function(d){
+        return d.id;
+      })
+      .enter().append("g")
+      .attr("class", "leaflet-zoom-hide bubble")
+      .attr("id", function(d){
+        return "id" + d.id;
+      });
+
+    map.on('contextmenu', function(e) {
     var options = {
       'lat' : e.latlng.lat,
       'lon' : e.latlng.lng
     }
     search_draw(options);
-  });
+    });
+
+    /* CORE STREAMING part, 
+    recall must client to get streamed data of rsvp objects */
+    must.Rsvps(function(rsvp) {
+       if(!stop) addTo_eventsList(rsvp);
+    });
+
+  }
+      
+
+
+
+  
 
 </script>
 </body>

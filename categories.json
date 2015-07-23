@@ -1,0 +1,23 @@
+{"categories":[
+{"name":"Uncategorized","id":0,"shortname":"Uncategorized"},
+{"name":"Arte & Cultura","id":1,"shortname":"Arte"},
+{"name":"Affari & Carriera","id":2,"shortname":"Business"},
+{"name":"Macchine & Moto","id":3,"shortname":"Auto"},
+{"name":"Comunità & Ambiente","id":4,"shortname":"Community"},
+{"name":"Ballo","id":5,"shortname":"Ballo"},
+{"name":"Educazione & Apprendimento","id":6,"shortname":"Formazione"},
+{"name":"Moda & Bellezza","id":8,"shortname":"Moda"},
+{"name":"Fitness","id":9,"shortname":"Fitness"},
+{"name":"Cibo & Bevande","id":10,"shortname":"Cibo & Bevande"},
+{"name":"Giochi","id":11,"shortname":"Giochi"},
+{"name":"LGBT","id":12,"shortname":"LGBT"},
+{"name":"Politica & Movimenti","id":13,"shortname":"Movimenti"},
+{"name":"Salute & Benessere","id":14,"shortname":"Benessere"},
+{"name":"Hobby & Artigianato","id":15,"shortname":"Artigianato"},
+{"name":"Lingue & Identità Culturale","id":16,"shortname":"Lingue"},
+{"name":"Stili di vita","id":17,"shortname":"Stile di vita"},
+{"name":"Letteratura & Scrittura","id":18,"shortname":"Letteratura"},
+{"name":"Film & TV","id":20,"shortname":"Film"},
+{"name":"Musica","id":21,"shortname":"Musica"},
+{"name":"New Age & Spiritualità","id":22,"shortname":"Spiritualità"}
+]}
