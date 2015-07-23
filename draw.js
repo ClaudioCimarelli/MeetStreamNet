@@ -110,9 +110,7 @@ function draw_enter(collection){
     g.selectAll("circle")
     .data(collection,function(d){
       return d.id;
-    })
-   
-   feature.exit().remove();
+    });
    var enterCircles = feature.enter();
 /* append svg circle element and text tip */
    enterCircles
@@ -135,7 +133,8 @@ function draw_enter(collection){
    function update() {
     "use strict";
     /*update circles positions*/
-    g.style("opacity", 0);
+    g
+    .style("opacity", 0);
 
     var n = feature.size();
 
@@ -150,9 +149,13 @@ function draw_enter(collection){
        } );
 
       if (i === n-1){
-           g.style("opacity", null);
+           g
+          .style("opacity", null);
       }
-    }); 
+    });
+
+    
+    
 
       //* alternative way to traslate circle elements*/
        /*feature.attr("transform", 
@@ -180,7 +183,7 @@ function draw_onRsvp(id){
         return event.name
             + "\nRSVPs Number : " + event.rsvp_yes
             + "\nStart date : " + strftime('%F %R\n', new Date(d.time))
-            + "\nColor : blue-->start in some days || red-->start in some hours";
+            + "\nColor : blue-->proposed || red-->upcoming";
       });
 
     blink_transition(id); //start transition on rsvp
@@ -238,34 +241,3 @@ function draw_onRsvp(id){
         });
 
   }
-
-  function draw_category(collection){
-  "use strict"; 
-
-   var feature =
-    g.selectAll("circle")
-    .data(collection,function(d){
-      return d.id;
-    })
-    
-    feature.exit().remove();
-
-   var enterCircles = feature.enter();
-/* append svg circle element and text tip */
-   enterCircles
-   .append("circle").attr('id', function(d){
-    return 'id'+d.id;
-   })
-   .attr("cx", function(d){
-      return map.latLngToLayerPoint(d.point).x;
-    })
-    .attr("cy", function(d){
-      return map.latLngToLayerPoint(d.point).y;
-    })
-    .append("title")
-    .style("opacity", ".5");
-    //.style("fill", "teal");
-
-   map.on("viewreset", update);
-
-}
