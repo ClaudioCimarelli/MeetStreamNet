@@ -22,32 +22,9 @@ function search_draw(options){
 			return doc.venue !== undefined;
 		});
 		limit -= results.length;
-		results.forEach(function(doc){
-			
-			var deafaultCategory = {
-				'id': 0,
-				'name' : "uncategorized",
-				'shortname': "uncategorized"
-			}
-			var newEvent = {
-				'event_id': doc.id,
-			    'name' : doc.name,
-			    'time': doc.time,
-			    'url': doc.event_url,
-			    'rsvp_yes': doc.yes_rsvp_count,
-			    'lat': doc.venue.lat,
-			    'lon': doc.venue.lon,
-			    'category': doc.group.category || deafaultCategory,
-			    'counter':1
-			  } ;
-
-			if(doc.duration)
-			  	newEvent.duration = doc.duration;
-			else 
-				newEvent.duration = 10800000;
-			
-			 draw_event(newEvent);
-		})
+		results.forEach(function(doc){			
+			 create_event(doc);
+		});
 		params.offset++;
 		if(data.meta.next !== "" && limit>0 && params.offset<counter){			
 			get_events_by_loc(params, callback);
@@ -58,34 +35,44 @@ function search_draw(options){
 		get_events_by_loc(params, callback);
 }
 
-function draw_event(event){
-	if(events_map.has(event.event_id)) return;
-	var point = new L.LatLng(event.lat, event.lon);
-      events_id_list.push({
-        'id': event.event_id,
-        'point': point,
-        'time': event.time
-      });
-      /*set index for category */
-      var category = event.category;
-      var category_list = category_map.get(category.id);
-      if(!category_list){
-	      category_list = [];
-	      category_map.set(category.id, category_list);
-	  }	  
-      category_list.push(event);
-      
-      events_map.set(event.event_id, event);
-      draw_enter(events_id_list);
-      draw_onRsvp(event.event_id);
-}
+function create_event(doc){
+	if(events_map.has(doc.id)) return;
+	var deafaultCategory = {
+	      'id': 0,
+	      'name' : "uncategorized",
+	      'shortname': "uncategorized"
+	  }
+	var point = new L.LatLng(doc.venue.lat, doc.venue.lon);
+	var newEvent = {
+		'event_id': doc.id,
+		'name' : doc.name,
+		'time': doc.time,
+		'url': doc.event_url,
+		'rsvp_yes': doc.yes_rsvp_count,
+		'point' : point,
+		'category': doc.group.category || deafaultCategory,
+		'counter':1
+	};
+	/* set duration of event */
+	if(doc.duration)
+		newEvent.duration = doc.duration;
+	else
+		newEvent.duration = 10800000;
 
-var meta_information = function(err, data){
-		if(err){
-			return console.err(err);
-		}
-		var meta = data.meta;
-
-
+	/*index category -> list event */
+	var category = newEvent.category;
+	var category_list = category_map.get(category.id);
+	if(!category_list){
+		category_list = [];
+		category_map.set(category.id, category_list);
 	}
-	//get_events_meta(lat, lon, radius, meta_information);
+	category_list.push({
+	  'id': id,
+	  'point': point,
+	  'time': newEvent.time
+	});
+	/*base index event_ID -> event */
+	events_map.set(doc.id, newEvent); 
+	draw_enter(category.id);
+	draw_onRsvp(doc.id);
+}
