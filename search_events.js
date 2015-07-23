@@ -39,8 +39,8 @@ function create_event(doc){
 	if(events_map.has(doc.id)) return;
 	var deafaultCategory = {
 	      'id': 0,
-	      'name' : "uncategorized",
-	      'shortname': "uncategorized"
+	      'name' : "Uncategorized",
+	      'shortname': "Uncategorized"
 	  }
 	var point = new L.LatLng(doc.venue.lat, doc.venue.lon);
 	var newEvent = {
@@ -67,7 +67,7 @@ function create_event(doc){
 		category_map.set(category.id, category_list);
 	}
 	category_list.push({
-	  'id': id,
+	  'id': doc.id,
 	  'point': point,
 	  'time': newEvent.time
 	});

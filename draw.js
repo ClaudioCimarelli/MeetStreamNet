@@ -9,11 +9,7 @@
   //             this.stream.point(point.x, point.y);
   //      };
 
-/* initialize data structures to store events for D3 data nodes*/
- \
- var events_map = new Map();
- var waiting_on_get = new Set();
- var category_map = new Map();
+
 
  function addTo_eventsList(rsvp){
 
