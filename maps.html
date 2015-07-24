@@ -73,7 +73,7 @@ a {
     padding: 2px 15px 2px 5px;
     position:absolute;
     top:2px;
-    width:280px;
+    width:200px;
     list-style:none;
     height: 100px;
     overflow: auto;
@@ -216,7 +216,7 @@ button {
   function filterSelection(categories){
     var content = d3.select(".leaflet-top");
     var div = content.append("div").attr("class", "leaflet-control");
-    div.html("<dl class=\"dropdown\"><dt><a href=\"#\"><span class=\"hida\">Select categories</span><p class=\"multiSel\"></p></a></dt><dd><div class=\"multiSelect\"></div></dd><button>Filter</button></dl>");
+    div.html("<dl class=\"dropdown\"><dt><a href=\"#\"><span class=\"hida\">Select categories</span><p class=\"multiSel\"></p></a></dt><dd><div class=\"multiSelect\"></div></dd><input type=\"submit\" onclick=\"filter_categories()\" value=\"Select\"></dl>");
     var multiSelect = div.select(".multiSelect").html("<ul id=\"filterSelection\"></ul>");
     var list = multiSelect.select("#filterSelection");
     var li_cat = list.selectAll("li").data(categories, function(d){
@@ -228,10 +228,10 @@ button {
     });
     li_cat
     .html(function(d){
-       return "<input type=\"checkbox\" value="+ d.id + ">"
+       return "<input type=\"checkbox\" onclick=\"arrayValue(this)\" value="+ d.id + ">"
                + d.name;
     });
-    
+
 
     /*
   Dropdown with Multiple checkbox select with jQuery - May 27, 2013
