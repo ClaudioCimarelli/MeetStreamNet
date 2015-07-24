@@ -26,7 +26,7 @@
         /* callback to get the actual event object*/
           return function(err, doc){
               if(err) return console.log(err);
-              if(!doc.id) return console.log(doc);
+              if(!doc) return console.log(doc);
               if(!draw && events_map.has(doc.id)) return updateDrawRsvp(doc.id);
               create_event(doc);
               waiting_on_get.delete(doc.id);
@@ -67,7 +67,7 @@ function draw_enter(category_id){
   /* append svg circle for new elements in dataset */
   feature.enter()
   .append("circle").attr('id', function(d){
-  return 'id'+d.id;
+    return 'id'+d.id;
   })
   .attr("cx", function(d){
     return map.latLngToLayerPoint(d.point).x;
@@ -75,7 +75,7 @@ function draw_enter(category_id){
   .attr("cy", function(d){
     return map.latLngToLayerPoint(d.point).y;
   })
-  .on("click", view_relations)
+  .on("dblclick", view_relations)
   .append("title")
   .style("opacity", ".5");
 
@@ -97,6 +97,7 @@ function draw_enter(category_id){
     .attr("cy", function(d){
       return map.latLngToLayerPoint(d.point).y;
      } );
+
 /* alternative way to traslate circle elements*/
  /*feature.attr("transform", 
    function(d) { 
@@ -138,22 +139,28 @@ function draw_onRsvp(id){
       .style("opacity", .9)
       .style("fill", "yellow")
       .transition()
-      .ease('linear')
-      .duration(500)
-      .attr("r", function(d){
-      var rsvps = events_map.get(d.id).rsvp_yes;
-      return radius(rsvps)+5;
-      })
+        .ease('linear')
+        .duration(5000)
+        .attr("r", function(d){
+            var rsvps = events_map.get(d.id).rsvp_yes;
+            return radius(rsvps)+5;
+        })
+        .each('start', function(d){
+          d3.select(this)
+          .on('click', game);
+        })
       .transition()
-      .ease('linear')
-      .duration(200)
-      .attr("r", function(d){
-      var rsvps = events_map.get(d.id).rsvp_yes;
-      return radius(rsvps);
-      })
-      .each('end', function(d) {
-        timeTransition(d.id);
-      });
+        .ease('linear')
+        .duration(200)
+        .attr("r", function(d){
+            var rsvps = events_map.get(d.id).rsvp_yes;
+            return radius(rsvps);
+        })
+        .each('end', function(d) {
+          timeTransition(d.id);
+          d3.select(this)
+          .on('click', null);
+        });
         
   }
 
@@ -179,39 +186,7 @@ function draw_onRsvp(id){
           return d3.interpolateRgb(heatmapColour(Math.exp((date.getTime()-d.time)/5e8)),"red");
         });
 
-  }
-
-  var values = new Set();
-  var idvalues = [0,1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,20,21,22];
-  function arrayValue(d) {
-    if (d.checked)
-      values.add(d.value);
-    else
-      values.delete(d.value);
-  }
-
-  function filter_categories() {
-     
-     if(values.size===0) {
-      idvalues.forEach(function(d) {
-        var g = svg.select("#id"+d);
-        g.style("opacity", null);
-      });
-      return;      
-     }
-     values.forEach(function(d) {
-        var g = svg.select("#id"+d);
-        g.style("opacity", null);
-     });   
-
-     idvalues.forEach(function(d) {
-        if (!values.has(d+"")){
-        var g = svg.select("#id"+d);
-        g.style("opacity", 0);
-        }
-     });
-
-  }
+  } 
 
   function view_relations(d) {
     var options = {
@@ -228,4 +203,8 @@ function draw_onRsvp(id){
       });
       console.log(data.length);
     }
+  }
+
+  function game(d){
+    console.log("bravoooohhh!");
   }
