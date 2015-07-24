@@ -140,7 +140,7 @@ function draw_onRsvp(id){
       .style("fill", "yellow")
       .transition()
         .ease('linear')
-        .duration(5000)
+        .duration(500)
         .attr("r", function(d){
             var rsvps = events_map.get(d.id).rsvp_yes;
             return radius(rsvps)+5;
