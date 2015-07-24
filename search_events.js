@@ -1,4 +1,4 @@
-function search_draw(options){
+function search_draw(options,callback){
 	var params = {
 		'lat' : options.lat || 41.8858,
 		'lon' : options.lon || 12.4822,
@@ -13,7 +13,9 @@ function search_draw(options){
 
 	var counter = limit/params.page; 
 
-	var callback = function(err, data){
+	get_events_by_loc(params, get_results);
+
+	function get_results(err, data){
 		if(err) throw err;
 		if(!data) return;
 		var results = data.results;
@@ -26,13 +28,13 @@ function search_draw(options){
 			 create_event(doc);
 		});
 		params.offset++;
-		if(data.meta.next !== "" && limit>0 && params.offset<counter){			
-			get_events_by_loc(params, callback);
-			//get_next(data.meta.next, callback);
+		if(callback){
+			callback(null, results);
 		}
-
-	}
-		get_events_by_loc(params, callback);
+		if(data.meta.next !== "" && limit>0 && params.offset<counter){			
+			get_events_by_loc(params, get_results);
+		}		
+	}	
 }
 
 function create_event(doc){
@@ -51,6 +53,7 @@ function create_event(doc){
 		'rsvp_yes': doc.yes_rsvp_count,
 		'point' : point,
 		'category': doc.group.category || deafaultCategory,
+		'group_urlname' : doc.group.urlname,
 		'counter':1
 	};
 	/* set duration of event */

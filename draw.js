@@ -75,6 +75,7 @@ function draw_enter(category_id){
   .attr("cy", function(d){
     return map.latLngToLayerPoint(d.point).y;
   })
+  .on("click", view_relations)
   .append("title")
   .style("opacity", ".5");
 
@@ -210,4 +211,21 @@ function draw_onRsvp(id){
         }
      });
 
+  }
+
+  function view_relations(d) {
+    var options = {
+    'lat' : d.point.lat,
+    'lon' : d.point.lng,
+    'limit': 10
+  }
+    search_draw(options, callback);
+
+    function callback(err, data){
+      if(err) throw err;
+      data.forEach(function(event){
+        console.log(event.id+" - " + event.group.urlname);
+      });
+      console.log(data.length);
+    }
   }
