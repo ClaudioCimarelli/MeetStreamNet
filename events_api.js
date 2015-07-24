@@ -51,7 +51,7 @@ function get_events_by_loc(params, callback){
 			'radius': params.radius || 100,
 			'status': params.status || 'upcoming',
 			'order': params.order|| 'distance',
-			'page': params.page || 20,
+			'page': params.page || 50,
 			'offset': params.offset || 0,
 			'fields': params.fields || ""
 		},

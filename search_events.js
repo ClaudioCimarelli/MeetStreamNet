@@ -3,7 +3,7 @@ function search_draw(options){
 		'lat' : options.lat || 41.8858,
 		'lon' : options.lon || 12.4822,
 		'radius' : options.radius || 100,
-		'page': options.page || 20,
+		'page': options.page || 50,
 		'offset': options.offset || 0,
 		'fields': options.fields || "category"
 	}
