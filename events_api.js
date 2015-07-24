@@ -66,7 +66,7 @@ function get_events_by_loc(params, callback){
 }
 
 
-function get_events_meta(lat, lon, radius, callback){ 
+function get_event_attendance(params, callback){ 
 	var key;
 	if(this.counter === undefined){
 	this.counter=0;}
@@ -79,7 +79,7 @@ function get_events_meta(lat, lon, radius, callback){
 		this.counter =0;
 	}
 	$.ajax({
-		'url': 'https://api.meetup.com/2/open_events/',
+		'url': '/'+params.urlname+'/events/'+params.event_id+'/attendance',
 		'dataType': 'jsonp',
 		'data':{
 			'key': key,

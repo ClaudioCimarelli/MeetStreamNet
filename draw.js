@@ -147,7 +147,7 @@ function draw_onRsvp(id){
         })
         .each('start', function(d){
           d3.select(this)
-          .on('click', game);
+          .on('mouseover', game);
         })
       .transition()
         .ease('linear')
@@ -159,7 +159,7 @@ function draw_onRsvp(id){
         .each('end', function(d) {
           timeTransition(d.id);
           d3.select(this)
-          .on('click', null);
+          .on('mouseover', null);
         });
         
   }
@@ -205,6 +205,10 @@ function draw_onRsvp(id){
     }
   }
 
+  var gamecount = 0;
   function game(d){
-    console.log("bravoooohhh!");
+    gamecount++;
+    d3.select(this)
+    .on('mouseover', null);
+    console.log(gamecount);
   }
