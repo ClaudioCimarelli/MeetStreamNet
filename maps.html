@@ -195,6 +195,11 @@ button {
         return "id" + d.id;
       });
 
+    svg.append("g")
+    .attr("class", "leaflet-zoom-hide")
+      .attr("id", "idEdges");
+
+
     filterSelection(categories);
 
     map.on('contextmenu', function(e) {

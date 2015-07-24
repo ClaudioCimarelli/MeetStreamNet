@@ -1,3 +1,42 @@
+function addTo_eventsList(rsvp){
+
+    if(rsvp.response !== 'yes' || 
+      rsvp.venue === undefined ||
+      (rsvp.venue.lat === 0 && rsvp.venue.lon ===0)) return; 
+
+    var id = rsvp.event.event_id;
+    var event = events_map.get(id);
+
+    if(event === undefined){
+      var callback = function(options){
+          var draw = options.draw || true;
+        /* callback to get the actual event object*/
+          return function(err, doc){
+              if(err) return console.log(err);
+              if(!doc.id) return console.log(doc);
+              if(!draw && events_map.has(doc.id)) return updateDrawRsvp(doc.id);
+              create_event(doc);
+              waiting_on_get.delete(doc.id);
+          };
+      };
+      if(!waiting_on_get.has(id)){
+          waiting_on_get.add(id);
+          get_by_eventid({'id': id, 'fields': 'category' }, callback({'draw':true}));      
+      }
+      else  get_by_eventid({'id': id, 'fields': 'category' }, callback({'draw':false}));  
+    }
+    else {
+      updateDrawRsvp(id);
+    }
+ }
+
+ function updateDrawRsvp(id){
+  var event = events_map.get(id);
+  event.rsvp_yes++;
+  draw_onRsvp(id);
+ }
+
+
 function search_draw(options,callback){
 	var params = {
 		'lat' : options.lat || 41.8858,
@@ -17,7 +56,7 @@ function search_draw(options,callback){
 
 	function get_results(err, data){
 		if(err) throw err;
-		if(!data) return;
+		if(!data.id) return;
 		var results = data.results;
 		if(!results) return;
 		results = results.filter(function(doc){
@@ -37,6 +76,53 @@ function search_draw(options,callback){
 	}	
 }
 
+function view_relations(d) {
+	var myevent = events_map.get(d.id);
+	var options = {
+	'lat' : d.point.lat,
+	'lon' : d.point.lng,
+	'limit': 10
+    }
+    search_draw(options, callback);  
+
+    function callback(err, eventsList){
+      if(err) throw err;
+      get_members({
+        	"group_id": myevent.group_id
+        }, pre_intersect);
+
+	   function pre_intersect(err, data) {
+
+			var myevent_members = data.results;
+			myevent_members = myevent_members.map(function(mem){
+				return mem.id;
+			});
+			eventsList.forEach(function(event){
+				get_members({
+				"group_id": event.group.id
+				}, intersect);
+				function intersect(err,data) {
+					var event_members = data.results;
+					event_members = myevent_members.map(function(mem){
+					return mem.id;
+					});
+		  			var intersection = $.arrayIntersect(myevent_members, event_members);
+		  			draw_edge(myevent.event_id, event.id, intersection.length);
+		  		}
+	  		});	
+	  }
+	}
+
+}
+
+  $.arrayIntersect = function(a, b)
+  {
+    return $.grep(a, function(i)
+    {
+        return $.inArray(i, b) > -1;
+    });
+  };
+
 function create_event(doc){
 	if(events_map.has(doc.id)) return;
 	var deafaultCategory = {
@@ -54,6 +140,7 @@ function create_event(doc){
 		'point' : point,
 		'category': doc.group.category || deafaultCategory,
 		'group_urlname' : doc.group.urlname,
+		'group_id' : doc.group.id,
 		'counter':1
 	};
 	/* set duration of event */
@@ -79,3 +166,12 @@ function create_event(doc){
 	draw_enter(category.id);
 	draw_onRsvp(doc.id);
 }
+
+
+var gamecount = 0;
+  function game(d){
+    gamecount++;
+    d3.select(this)
+    .on('mouseover', null);
+    console.log(gamecount);
+  }

@@ -11,44 +11,7 @@
 
 
 
- function addTo_eventsList(rsvp){
-
-    if(rsvp.response !== 'yes' || 
-      rsvp.venue === undefined ||
-      (rsvp.venue.lat === 0 && rsvp.venue.lon ===0)) return; 
-
-    var id = rsvp.event.event_id;
-    var event = events_map.get(id);
-
-    if(event === undefined){
-      var callback = function(options){
-          var draw = options.draw || true;
-        /* callback to get the actual event object*/
-          return function(err, doc){
-              if(err) return console.log(err);
-              if(!doc) return console.log(doc);
-              if(!draw && events_map.has(doc.id)) return updateDrawRsvp(doc.id);
-              create_event(doc);
-              waiting_on_get.delete(doc.id);
-          };
-      };
-      if(!waiting_on_get.has(id)){
-          waiting_on_get.add(id);
-          get_by_eventid({'id': id, 'fields': 'category' }, callback({'draw':true}));      
-      }
-      else  get_by_eventid({'id': id, 'fields': 'category' }, callback({'draw':false}));  
-    }
-    else {
-      updateDrawRsvp(id);
-    }
- }
-
- function updateDrawRsvp(id){
-  var event = events_map.get(id);
-  event.rsvp_yes++;
-  draw_onRsvp(id);
- }
-
+ 
 /* function to set up  the drawing of NEW elements ENTERING the dataset */
 var radius = d3.scale.sqrt()
     .domain([0, 700])
@@ -75,7 +38,7 @@ function draw_enter(category_id){
   .attr("cy", function(d){
     return map.latLngToLayerPoint(d.point).y;
   })
-  .on("dblclick", view_relations)
+  .on("click", view_relations)
   .append("title")
   .style("opacity", ".5");
 
@@ -186,29 +149,25 @@ function draw_onRsvp(id){
           return d3.interpolateRgb(heatmapColour(Math.exp((date.getTime()-d.time)/5e8)),"red");
         });
 
-  } 
-
-  function view_relations(d) {
-    var options = {
-    'lat' : d.point.lat,
-    'lon' : d.point.lng,
-    'limit': 10
-  }
-    search_draw(options, callback);
-
-    function callback(err, data){
-      if(err) throw err;
-      data.forEach(function(event){
-        console.log(event.id+" - " + event.group.urlname);
-      });
-      console.log(data.length);
-    }
   }
 
-  var gamecount = 0;
-  function game(d){
-    gamecount++;
-    d3.select(this)
-    .on('mouseover', null);
-    console.log(gamecount);
+  function draw_edge(id1,id2,weight) {
+    var event1 = events_map.get(id1);
+    var event2 = events_map.get(id2);
+    var simpleLine = d3.svg.line()
+    svg.select("#idEdges")
+    .append('path')
+    .attr({
+      'd': simpleLine([[0,0],[200,200]]),
+      'stroke': '#000'
+    });
+   /* d3.select('svg')
+    .append('line')
+    .attr({
+    'x1': map.latLngToLayerPoint(event1.point).x,
+    'y1': map.latLngToLayerPoint(event1.point).y,
+    'x2': map.latLngToLayerPoint(event2.point).x,
+    'y2': map.latLngToLayerPoint(event2.point).y,
+    'stroke': '#000'
+    })*/
   }
