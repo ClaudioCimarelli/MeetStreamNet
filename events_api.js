@@ -40,11 +40,13 @@ function get_events_by_loc(params, callback){
 	if(this.counter === 0){
 		key = '52f2a7670c33a1e4634122a4e9';
 		this.counter++;
-	}
-	else{
-		key = '9796e202068fb23423157831262a';
-		this.counter =0;
-	}
+	} else if(this.counter === 1){
+		key = '493366a27c7b402c257c1a2e18237e';
+		this.counter++;
+		} else {
+			key = '9796e202068fb23423157831262a';
+			this.counter =0;
+		  }
 	$.ajax({
 		'url': 'https://api.meetup.com/2/open_events/',
 		'dataType': 'jsonp',
@@ -78,11 +80,13 @@ function get_event_attendance(params, callback){
 	if(this.counter === 0){
 		key = '52f2a7670c33a1e4634122a4e9';
 		this.counter++;
-	}
-	else{
-		key = '9796e202068fb23423157831262a';
-		this.counter =0;
-	}
+	} else if(this.counter === 1){
+		key = '493366a27c7b402c257c1a2e18237e';
+		this.counter++;
+		} else {
+			key = '9796e202068fb23423157831262a';
+			this.counter =0;
+		  }
 	$.ajax({
 		'url': '/'+params.urlname+'/events/'+params.event_id+'/attendance',
 		'dataType': 'jsonp',
@@ -113,11 +117,13 @@ function get_members(params,callback){
 	if(this.counter === 0){
 		key = '52f2a7670c33a1e4634122a4e9';
 		this.counter++;
-	}
-	else{
-		key = '9796e202068fb23423157831262a';
-		this.counter =0;
-	}
+	} else if(this.counter === 1){
+		key = '493366a27c7b402c257c1a2e18237e';
+		this.counter++;
+		} else {
+			key = '9796e202068fb23423157831262a';
+			this.counter =0;
+		  }
 	$.ajax({
 		'url': 'https://api.meetup.com/2/members/',
 		'data':{
