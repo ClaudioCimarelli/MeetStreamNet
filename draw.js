@@ -151,19 +151,14 @@ function draw_onRsvp(id){
 
   }
 
-  function draw_edge(id1,id2,weight) {
-    var event1 = events_map.get(id1);
-    var event2 = events_map.get(id2);
-    var simpleLine = d3.svg.line()
-    var params = {
-    'x1': map.latLngToLayerPoint(event1.point).x,
-    'y1': map.latLngToLayerPoint(event1.point).y,
-    'x2': map.latLngToLayerPoint(event2.point).x,
-    'y2': map.latLngToLayerPoint(event2.point).y,
-    'stroke': '#000'
-    };
+  function draw_edge(edges) {   
     svg.select("#idEdges")
-    .append('line')
+    .selectAll('line')
+    .data(edges, function(d){
+      return d.id;
+    })
+    .enter()
+    .append('line');/*
     .attr({
     'x1': map.latLngToLayerPoint(event1.point).x,
     'y1': map.latLngToLayerPoint(event1.point).y,
@@ -171,5 +166,5 @@ function draw_onRsvp(id){
     'y2': map.latLngToLayerPoint(event2.point).y,
     'stroke': 'green',
     'storke-width' : weight/10+'px'
-    });
+    })*/
   }

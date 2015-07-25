@@ -111,7 +111,7 @@ function view_relations(d) {
 					var intersection = $.arrayIntersect(myevent_members, event_members);
 					console.log(intersection);
 					if(intersection.length>0)
-						draw_edge(myevent.event_id, event.id, intersection.length);
+						create_relation(myevent.event_id, event.id, intersection.length);
 				}
 			});	
 	    }
@@ -123,6 +123,44 @@ $.arrayIntersect = function(a, b){
     	return $.inArray(i, b) > -1;
 	});
 };
+
+var edges_collection = [];
+var edgeIdSet = new Set();
+String.prototype.hashCode = function() {
+  var hash = 0, i, chr, len;
+  if (this.length == 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
+
+
+function create_relation(evtId1, evtId2, weight){
+
+	var id1 = (""+evtId1+evtId2).hashCode();
+	var id2 = (""+evtId1+evtId2).hashCode();
+
+	if(edgeIdSet.has(id1) || edgeIdSet.has(id2)) return; //hash func needed
+
+	edgeIdSet.add(id1);
+
+    var point1 = events_map.get(id1).point;
+    var point2 = events_map.get(id2).point;
+
+	var newEdge =  {
+		'id' : id1,
+		'point1' : point1,
+		'point2' : point2,
+		'weight': weight
+    }
+
+    edges_collection.push(newEdge);
+    draw_edges(edges_collection);
+
+}
 
 function create_event(doc){
 	if(events_map.has(doc.id)) return;
