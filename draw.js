@@ -147,7 +147,14 @@ function draw_onRsvp(id){
 
   }
 
-  function draw_edges(edges) {   
+  function draw_edges(edges) {
+
+   var colors = ["#6CE96C","#052605"];
+
+    var edgeColorScale = d3.scale.pow(2)
+    .domain([0,1])
+    .range(colors);
+
     svg.select("#idEdges")
     .selectAll('line')
     .data(edges, function(d){
@@ -155,7 +162,9 @@ function draw_onRsvp(id){
     })
     .enter()
     .append('line')
-    .style('stroke', 'black')
+    .style('stroke', function(d){
+      return edgeColorScale(d.weight);
+    })
     .attr('x1', function(d){
       return map.latLngToLayerPoint(d.point1).x;
     })

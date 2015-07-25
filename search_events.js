@@ -110,8 +110,10 @@ function view_relations(d) {
 						return mem.id;
 					});
 					var intersection = $.arrayIntersect(myevent_members, event_members);
-					if(intersection.length>0)
-						create_relation(myevent.event_id, event.id, intersection.length);
+					if(intersection.length>0){
+						var weight = intersection.length(Math.max(event_members.length, myevent_members.length));
+						create_relation(myevent.event_id, event.id, weight);
+					}
 				}
 			});	
 	    }
