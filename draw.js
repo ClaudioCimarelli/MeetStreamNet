@@ -51,6 +51,20 @@ function draw_enter(category_id){
       return map.latLngToLayerPoint(d.point).y;
      } );
 
+  edges
+    .attr('x1', function(d){
+      return map.latLngToLayerPoint(d.point1).x;
+    })
+    .attr('y1', function(d){
+      return map.latLngToLayerPoint(d.point1).y;
+    })
+    .attr('x2', function(d){
+      return map.latLngToLayerPoint(d.point2).x;
+    })
+    .attr('y2', function(d){
+      return map.latLngToLayerPoint(d.point2).y;
+    });
+
 
  }
 
@@ -140,7 +154,20 @@ function draw_onRsvp(id){
       return d.id;
     })
     .enter()
-    .append('line');/*
+    .append('line')
+    .style('stroke', 'black')
+    .attr('x1', function(d){
+      return map.latLngToLayerPoint(d.point1).x;
+    })
+    .attr('y1', function(d){
+      return map.latLngToLayerPoint(d.point1).y;
+    })
+    .attr('x2', function(d){
+      return map.latLngToLayerPoint(d.point2).x;
+    })
+    .attr('y2', function(d){
+      return map.latLngToLayerPoint(d.point2).y;
+    });/*
     .attr({
     'x1': map.latLngToLayerPoint(event1.point).x,
     'y1': map.latLngToLayerPoint(event1.point).y,

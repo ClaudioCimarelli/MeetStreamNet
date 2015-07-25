@@ -178,6 +178,10 @@ button {
   
 /*start and stop streaming */
   var start = true;
+  
+/*filter on categories util*/ 
+  var values = new Set();
+  var categoriesIDvalues = [];
 
   queue()
   .defer(d3.json,"categories.json")
@@ -187,8 +191,11 @@ button {
     if(err){
       return console.log(err);
     }
-
     var categories = collection.categories;
+    categoriesIDvalues = categories.map(function(cat){
+      return cat.id;
+    })
+
     svg.selectAll("g")
       .data(categories, function(d){
         return d.id;
@@ -221,9 +228,7 @@ button {
     filterSelection(categories);
 
   } 
-
-  var values = new Set();
-  var idvalues = [0,1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,20,21,22];
+  
 
   function filterSelection(categories){    
 
@@ -303,7 +308,7 @@ button {
 
   function filter_categories() {         
      if(values.size===0) {
-      idvalues.forEach(function(d) {
+      categoriesIDvalues.forEach(function(d) {
         var g = svg.select("#id"+d);
         g.style("opacity", null);
       });
@@ -314,7 +319,7 @@ button {
         g.style("opacity", null);
      });   
 
-     idvalues.forEach(function(d) {
+     categoriesIDvalues.forEach(function(d) {
         if (!values.has(d+"")){
         var g = svg.select("#id"+d);
         g.style("opacity", 0);

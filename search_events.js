@@ -62,7 +62,8 @@ function search_draw(options,callback){
 					(doc.venue.lat !== 0 && doc.venue.lon !==0);
 		});
 		limit -= results.length;
-		results.forEach(function(doc){			
+		results.forEach(function(doc){
+		if(doc.id === '223887704') console.log(doc);			
 			 create_event(doc);
 		});
 		params.offset++;
@@ -109,7 +110,6 @@ function view_relations(d) {
 						return mem.id;
 					});
 					var intersection = $.arrayIntersect(myevent_members, event_members);
-					console.log(intersection);
 					if(intersection.length>0)
 						create_relation(myevent.event_id, event.id, intersection.length);
 				}
