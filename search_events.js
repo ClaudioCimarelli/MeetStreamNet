@@ -1,4 +1,4 @@
-function addTo_eventsList(rsvp){
+function manage_newRsvp(rsvp){
 
     if(rsvp.response !== 'yes' || 
       rsvp.venue === undefined ||
@@ -13,7 +13,7 @@ function addTo_eventsList(rsvp){
         /* callback to get the actual event object*/
           return function(err, doc){
               if(err) return console.log(err);
-              if(!doc.id) return console.log(doc);
+              if(doc.problem) return console.log(doc);
               if(!draw && events_map.has(doc.id)) return updateDrawRsvp(doc.id);
               create_event(doc);
               waiting_on_get.delete(doc.id);
@@ -52,13 +52,11 @@ function search_draw(options,callback){
 
 	var counter = limit/params.page; 
 
-	get_events_by_loc(params, get_results);
-
 	function get_results(err, data){
 		if(err) throw err;
-		if(!data.id) return;
+		if(data.problem) return console.log(data);
 		var results = data.results;
-		if(!results) return;
+		if(!results) return console.log(data);
 		results = results.filter(function(doc){
 			return doc.venue !== undefined;
 		});
@@ -73,7 +71,8 @@ function search_draw(options,callback){
 		if(data.meta.next !== "" && limit>0 && params.offset<counter){			
 			get_events_by_loc(params, get_results);
 		}		
-	}	
+	}
+	get_events_by_loc(params, get_results);	
 }
 
 function view_relations(d) {

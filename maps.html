@@ -53,8 +53,8 @@ a {
     background-color:#4F6877;
     display:block;
     padding: 8px 20px 5px 10px;
-    min-height: 25px;
-    line-height: 24px;
+    /*min-height: 25px;
+    line-height: 24px;*/
     overflow: hidden;
     border:0;
     width:100px;
@@ -88,6 +88,10 @@ a {
 .dropdown dd ul li a:hover {
     background-color:#fff;
 }
+.multiSel p {
+    margin: 0;
+  }
+
 button {
   background-color: #6BBE92;
   width: 130px;
@@ -200,8 +204,6 @@ button {
       .attr("id", "idEdges");
 
 
-    filterSelection(categories);
-
     map.on('contextmenu', function(e) {
     var options = {
       'lat' : e.latlng.lat,
@@ -213,15 +215,21 @@ button {
     /* CORE STREAMING part, 
     recall must client to get streamed data of rsvp objects */
     must.Rsvps(function(rsvp) {
-       if(start) addTo_eventsList(rsvp);
+       if(start) manage_newRsvp(rsvp);
     });
+    
+    filterSelection(categories);
 
   } 
 
-  function filterSelection(categories){
+  var values = new Set();
+  var idvalues = [0,1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,20,21,22];
+
+  function filterSelection(categories){    
+
     var content = d3.select(".leaflet-top");
     var div = content.append("div").attr("class", "leaflet-control");
-    div.html("<dl class=\"dropdown\"><dt><a href=\"#\"><span class=\"hida\">Category list : </span><p class=\"multiSel\"></p></a></dt><dd><div class=\"multiSelect\"></div></dd><input type=\"submit\" onclick=\"filter_categories()\" value=\"Select\"><input type=\"submit\" onclick=\"clear_filter()\" value=\"Clear All\"></dl>");
+    div.html("<dl class=\"dropdown\"><dt><a href=\"#\"><span class=\"hida\">Category list : </span><span class=\"multiSel\"></span></a></dt><dd><div class=\"multiSelect\"></div></dd><input type=\"submit\" onclick=\"filter_categories()\" value=\"Select\"><input type=\"submit\" onclick=\"clear_filter()\" value=\"Clear All\"></dl>");
     var multiSelect = div.select(".multiSelect").html("<ul id=\"filterSelection\"></ul>");
     var list = multiSelect.select("#filterSelection");
     var li_cat = list.selectAll("li").data(categories, function(d){
@@ -235,82 +243,79 @@ button {
     .html(function(d){
        return "<input type=\"checkbox\" onclick=\"arrayValue(this)\" value="+ d.id + ">"
                + d.name;
-    });
+    }); 
 
-    var values = new Set();
-    var idvalues = [0,1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,20,21,22];
-    
-    function arrayValue(d) {
-      if (d.checked)
-        values.add(d.value);
-      else
-        values.delete(d.value);
-    }
-
-    function filter_categories() {         
-       if(values.size===0) {
-        idvalues.forEach(function(d) {
-          var g = svg.select("#id"+d);
-          g.style("opacity", null);
-        });
-        return;      
-       }
-       values.forEach(function(d) {
-          var g = svg.select("#id"+d);
-          g.style("opacity", null);
-       });   
-
-       idvalues.forEach(function(d) {
-          if (!values.has(d+"")){
-          var g = svg.select("#id"+d);
-          g.style("opacity", 0);
-          }
-       });
-    }
-
-
-    /*
-  Dropdown with Multiple checkbox select with jQuery - May 27, 2013
-  (c) 2013 @ElmahdiMahmoud
-  license: http://www.opensource.org/licenses/mit-license.php
-*/ 
-
-$(".dropdown dt a").on('click', function () {
+    $(".dropdown dt a").on('click', function () {
           $(".dropdown dd ul").slideToggle('fast');
       });
 
-      $(".dropdown dd ul li a").on('click', function () {
-          $(".dropdown dd ul").hide();
-      });
+    $(".dropdown dd ul li a").on('click', function () {
+        $(".dropdown dd ul").hide();
+    });
 
-      function getSelectedValue(id) {
-           return $("#" + id).find("dt a span.value").html();
-      }
+    function getSelectedValue(id) {
+         return $("#" + id).find("dt a span.value").html();
+    }
 
-      $(document).bind('click', function (e) {
-          var $clicked = $(e.target);
-          if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
-      });
+    $(document).bind('click', function (e) {
+        var $clicked = $(e.target);
+        if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
+    });
 
 
-      $('.multiSelect input[type="checkbox"]').on('click', function () {
-        
-          var title = $(this).closest('.multiSelect').find('input[type="checkbox"]').val(),
-              title = $(this).val() + ",";
-        
-          if ($(this).is(':checked')) {
-              var html = '<span title="' + title + '">' + title + '</span>';
-              $('.multiSel').append(html);
-              $(".hida").hide();
-          } 
-          else {
-              $('span[title="' + title + '"]').remove();
-              var ret = $(".hida");
-              $('.dropdown dt a').append(ret);
-              
-          }
-   });      
+    $('.multiSelect input[type="checkbox"]').on('click', function () {
+      
+        var title = $(this).closest('.multiSelect').find('input[type="checkbox"]').val(),
+            title = $(this).val() + ",";
+      
+        if ($(this).is(':checked')) {
+            var html = '<span title="' + title + '">' + title + '</span>';
+            $('.multiSel').append(html);
+            //$(".hida").hide();
+        } 
+        else {
+            $('span[title="' + title + '"]').remove();
+            //var ret = $(".hida");
+            //$('.dropdown dt a').append(ret);
+            
+        }
+    });
   }
+
+  function arrayValue(d) {
+    if (d.checked)
+      values.add(d.value);
+    else
+      values.delete(d.value);
+  }
+
+  function clear_filter(){
+
+     console.log($('.multiSelect input[type="checkbox"]').val());
+
+  }
+
+  function filter_categories() {         
+     if(values.size===0) {
+      idvalues.forEach(function(d) {
+        var g = svg.select("#id"+d);
+        g.style("opacity", null);
+      });
+      return;      
+     }
+     values.forEach(function(d) {
+        var g = svg.select("#id"+d);
+        g.style("opacity", null);
+     });   
+
+     idvalues.forEach(function(d) {
+        if (!values.has(d+"")){
+        var g = svg.select("#id"+d);
+        g.style("opacity", 0);
+        }
+     });
+  }     
+
 
 /*var fragment = "<dl class=\"dropdown leaflet-control\"><dt><a href=\"#\"><span class=\"hida\">Select</span><p class=\"multiSel\"></p></a></dt><dd><div class=\"mutliSelect\"><ul><li><input type=\"checkbox\" value=\"Apple\" />Apple</li><li><input type=\"checkbox\" value=\"Blackberry\" />Blackberry</li><li><input type=\"checkbox\" value=\"HTC\" />HTC</li><li><input type=\"checkbox\" value=\"Sony Ericson\" />Sony Ericson</li><li><input type=\"checkbox\" value=\"Motorola\" />Motorola</li><li><input type=\"checkbox\" value=\"Nokia\" />Nokia</li></ul></div></dd><button>Filter</button></dl>";
     var cont = document.getElementsByClassName('leaflet-bottom leaflet-left');
