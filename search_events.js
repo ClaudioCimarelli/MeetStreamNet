@@ -28,13 +28,13 @@ function manage_newRsvp(rsvp){
     else {
       updateDrawRsvp(id);
     }
- }
+}
 
- function updateDrawRsvp(id){
-  var event = events_map.get(id);
-  event.rsvp_yes++;
-  draw_onRsvp(id);
- }
+function updateDrawRsvp(id){
+	var event = events_map.get(id);
+	event.rsvp_yes++;
+	draw_onRsvp(id);
+}
 
 
 function search_draw(options,callback){
@@ -58,7 +58,8 @@ function search_draw(options,callback){
 		var results = data.results;
 		if(!results) return console.log(data);
 		results = results.filter(function(doc){
-			return doc.venue !== undefined;
+			return doc.venue !== undefined &&
+					(doc.venue.lat !== 0 && doc.venue.lon !==0);
 		});
 		limit -= results.length;
 		results.forEach(function(doc){			
@@ -80,18 +81,18 @@ function view_relations(d) {
 	var options = {
 	'lat' : d.point.lat,
 	'lon' : d.point.lng,
-	'limit': 10
+	'limit': 50
     }
     search_draw(options, callback);  
 
     function callback(err, eventsList){
-      if(err) throw err;
-      get_members({
-        	"group_id": myevent.group_id
-        }, pre_intersect);
+		if(err) throw err;
+		get_members({
+			"group_id": myevent.group_id
+		}, pre_intersect);
 
-	   function pre_intersect(err, data) {
-
+		function pre_intersect(err, data) {
+			if(err) throw err;
 			var myevent_members = data.results;
 			myevent_members = myevent_members.map(function(mem){
 				return mem.id;
@@ -100,27 +101,28 @@ function view_relations(d) {
 				get_members({
 				"group_id": event.group.id
 				}, intersect);
-				function intersect(err,data) {
-					var event_members = data.results;
-					event_members = myevent_members.map(function(mem){
-					return mem.id;
-					});
-		  			var intersection = $.arrayIntersect(myevent_members, event_members);
-		  			draw_edge(myevent.event_id, event.id, intersection.length);
-		  		}
-	  		});	
-	  }
-	}
 
+				function intersect(err,data) {
+					if(err) throw err;
+					var event_members = data.results;
+					event_members = event_members.map(function(mem){
+						return mem.id;
+					});
+					var intersection = $.arrayIntersect(myevent_members, event_members);
+					console.log(intersection);
+					if(intersection.length>0)
+						draw_edge(myevent.event_id, event.id, intersection.length);
+				}
+			});	
+	    }
+	}
 }
 
-  $.arrayIntersect = function(a, b)
-  {
-    return $.grep(a, function(i)
-    {
-        return $.inArray(i, b) > -1;
-    });
-  };
+$.arrayIntersect = function(a, b){
+	return $.grep(a, function(i){
+    	return $.inArray(i, b) > -1;
+	});
+};
 
 function create_event(doc){
 	if(events_map.has(doc.id)) return;

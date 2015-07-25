@@ -155,19 +155,21 @@ function draw_onRsvp(id){
     var event1 = events_map.get(id1);
     var event2 = events_map.get(id2);
     var simpleLine = d3.svg.line()
+    var params = {
+    'x1': map.latLngToLayerPoint(event1.point).x,
+    'y1': map.latLngToLayerPoint(event1.point).y,
+    'x2': map.latLngToLayerPoint(event2.point).x,
+    'y2': map.latLngToLayerPoint(event2.point).y,
+    'stroke': '#000'
+    };
     svg.select("#idEdges")
-    .append('path')
-    .attr({
-      'd': simpleLine([[0,0],[200,200]]),
-      'stroke': '#000'
-    });
-   /* d3.select('svg')
     .append('line')
     .attr({
     'x1': map.latLngToLayerPoint(event1.point).x,
     'y1': map.latLngToLayerPoint(event1.point).y,
     'x2': map.latLngToLayerPoint(event2.point).x,
     'y2': map.latLngToLayerPoint(event2.point).y,
-    'stroke': '#000'
-    })*/
+    'stroke': 'green',
+    'storke-width' : weight/10+'px'
+    });
   }
