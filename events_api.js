@@ -5,15 +5,15 @@ function get_by_eventid(params,callback){
 	if(this.counter === 0){
 		key = '52f2a7670c33a1e4634122a4e9';
 		this.counter++;
-		console.log('claudio');
+		//console.log('claudio');
 	} else if(this.counter === 1){
 		key = '493366a27c7b402c257c1a2e18237e';
 		this.counter++;
-		console.log('john');
+		//console.log('john');
 		} else {
 			key = '9796e202068fb23423157831262a';
 			this.counter =0;
-			console.log('edo');
+			//console.log('edo');
 		  }
 	$.ajax({
 		'url': 'https://api.meetup.com/2/event/'+params.id,
