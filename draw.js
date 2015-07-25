@@ -1,17 +1,3 @@
-/* code for TopoJson */
-
-  // var transform = d3.geo.transform({
-  //         point: projectPoint
-  //     });
-  // var d3path = d3.geo.path().projection(transform);
-  // function projectPoint(x, y) {
-  //       var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-  //             this.stream.point(point.x, point.y);
-  //      };
-
-
-
- 
 /* function to set up  the drawing of NEW elements ENTERING the dataset */
 var radius = d3.scale.sqrt()
     .domain([0, 700])
@@ -51,9 +37,13 @@ function draw_enter(category_id){
 
   var g = svg.selectAll("g");
   
-  var feature = g.selectAll("circle");
+  var nodes = g.selectAll("circle");
 
-  feature
+  var edges = g.selectAll("line");
+
+
+
+  nodes
    .attr("cx", function(d){
       return map.latLngToLayerPoint(d.point).x;
       } )
@@ -61,15 +51,7 @@ function draw_enter(category_id){
       return map.latLngToLayerPoint(d.point).y;
      } );
 
-/* alternative way to traslate circle elements*/
- /*feature.attr("transform", 
-   function(d) { 
-     var y = d.coordinates[1];
-     var x = d.coordinates[0];
-     return "translate(" +
-                     map.latLngToLayerPoint(new L.LatLng(x,y)).x + "," +
-                     map.latLngToLayerPoint(new L.LatLng(x,y)).y + ")";
-      });*/
+
  }
 
 /*update radius and tip on rsvp received */
@@ -151,7 +133,7 @@ function draw_onRsvp(id){
 
   }
 
-  function draw_edge(edges) {   
+  function draw_edges(edges) {   
     svg.select("#idEdges")
     .selectAll('line')
     .data(edges, function(d){

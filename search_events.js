@@ -126,6 +126,7 @@ $.arrayIntersect = function(a, b){
 
 var edges_collection = [];
 var edgeIdSet = new Set();
+
 String.prototype.hashCode = function() {
   var hash = 0, i, chr, len;
   if (this.length == 0) return hash;
@@ -141,14 +142,14 @@ String.prototype.hashCode = function() {
 function create_relation(evtId1, evtId2, weight){
 
 	var id1 = (""+evtId1+evtId2).hashCode();
-	var id2 = (""+evtId1+evtId2).hashCode();
+	var id2 = (""+evtId2+evtId1).hashCode();
 
 	if(edgeIdSet.has(id1) || edgeIdSet.has(id2)) return; //hash func needed
 
 	edgeIdSet.add(id1);
 
-    var point1 = events_map.get(id1).point;
-    var point2 = events_map.get(id2).point;
+    var point1 = events_map.get(evtId1).point;
+    var point2 = events_map.get(evtId2).point;
 
 	var newEdge =  {
 		'id' : id1,
