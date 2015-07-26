@@ -62,8 +62,7 @@ function search_draw(options,callback){
 					(doc.venue.lat !== 0 && doc.venue.lon !==0);
 		});
 		limit -= results.length;
-		results.forEach(function(doc){
-		//if(doc.id === '223887704') console.log(doc);			
+		results.forEach(function(doc){	
 			 create_event(doc);
 		});
 		params.offset++;
