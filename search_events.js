@@ -63,7 +63,7 @@ function search_draw(options,callback){
 		});
 		limit -= results.length;
 		results.forEach(function(doc){
-		if(doc.id === '223887704') console.log(doc);			
+		//if(doc.id === '223887704') console.log(doc);			
 			 create_event(doc);
 		});
 		params.offset++;
