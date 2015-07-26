@@ -167,10 +167,10 @@ button {
 /*multi layer group control added to map*/
   L.control.layers(baseMaps).addTo(map);
 
-  /* TEST 100000 CIRCLE MARKER */
+  /* TEST 100000 CIRCLE MARKER 
 
   var randomLat =d3.shuffle(d3.range(-80,80, .001));
-  var randomLon = d3.shuffle(d3.range(-150,150, .01));
+  var randomLon = d3.shuffle(d3.range(-150,150, .001));
 
   var latlonPair = d3.zip(randomLat,randomLon);
 
@@ -179,7 +179,7 @@ button {
   });
 
 
-  L.circle([0, 0], 200).addTo(map);
+  L.circle([0, 0], 200).addTo(map); */
 
    /*init SVG Layer */
   map._initPathRoot();
