@@ -80,9 +80,10 @@ function draw_onRsvp(id){
         var event = events_map.get(d.id);
         var date = new Date();
         return event.name
-            + "\nRSVPs Number : " + event.rsvp_yes
-            + "\nStart date : " + strftime('%F %R\n', new Date(d.time))
-            + "\nColor : blue-->proposed || red-->upcoming";
+            + "\nRSVPs Number: " + event.rsvp_yes
+            + "\nStart date: " + strftime('%F %R', new Date(d.time))
+            + "\nGroup name: " + event.group_urlname
+            + "\nColor: Blue-->Proposed || Red-->Upcoming";
       });
 
     blink_transition(id); //start blink transition on rsvp
@@ -151,7 +152,7 @@ function draw_onRsvp(id){
 
    var colors = ["#6CE96C","#052605"];
 
-    var edgeColorScale = d3.scale.pow(2)
+    var edgeColorScale = d3.scale.sqrt()
     .domain([0,1])
     .range(colors);
 
@@ -176,7 +177,13 @@ function draw_onRsvp(id){
     })
     .attr('y2', function(d){
       return map.latLngToLayerPoint(d.point2).y;
-    });/*
+    })
+    .append('title')
+    .text(function(d) {
+        return "Weight: " + d.weight;
+      });
+
+    /*
     .attr({
     'x1': map.latLngToLayerPoint(event1.point).x,
     'y1': map.latLngToLayerPoint(event1.point).y,
