@@ -167,23 +167,82 @@ button {
 /*multi layer group control added to map*/
   L.control.layers(baseMaps).addTo(map);
 
-  /* TEST 100000 CIRCLE MARKER 
+  /* TEST 100000 CIRCLE MARKER */
+  function alphanumeric_unique() {
+    return Math.random().toString(36).split('').filter( function(value, index, self) { 
+        return self.indexOf(value) === index;
+    }).join('').substr(2,8);
+}
 
-  var randomLat =d3.shuffle(d3.range(-80,80, .001));
-  var randomLon = d3.shuffle(d3.range(-150,150, .001));
+  var randomLat =d3.shuffle(d3.range(-80,80, .1));
+  var randomLon = d3.shuffle(d3.range(-150,150, .1));
 
   var latlonPair = d3.zip(randomLat,randomLon);
 
-  latlonPair.forEach(function(p){
-    L.circle(p, 60).addTo(map);
+  latlonPair = latlonPair.map(function(elem){
+    var event = {
+      'lat' : elem[0],
+      'lon' : elem[1],
+      'id' : alphanumeric_unique()
+    }
+    return event;
   });
 
+  var point = new L.LatLng(41.76959, 12.65827);
 
-  L.circle([0, 0], 200).addTo(map); */
+  var newEvent = {
+    'event_id': '224044435',
+    'name' : "Consiglio Comunale",
+    'time': 1438005600000,
+    'url': "http://www.meetup.com/MarinoM5stelle/events/224044435/",
+    'rsvp_yes': 10,
+    'point' : point
+  };
+
+  draw_event(newEvent);
+
+  function draw_event(event){
+  "use strict";
+  var svg = d3.select("#map").select("svg");
+  var point = event.point;
+  var circle = L.circleMarker([point.lat, point.lng], 10).addTo(map); 
+  circle.id = "id"+event.event_id;
+
+  circle.setRadius(40);
+  circle.setRadius(150);
+
+  //circle.setRadius(200);
+
+  d3.select(circle['_path'])
+  .datum(event)
+  .attr('id', 'id'+event.event_id);
+
+  console.dir(d3.select(circle)[0]);
+  console.dir(d3.select(circle['_path']));
+  console.log(d3.select("#idx"+ event.event_id));
+
+
+
+
+
+
+  
+  /* append svg circle for new elements in dataset */
+  
+  /*.each(function(d){
+     L.circle([d.lat, d.lon], 60).addTo(map);
+  })
+  .attr('id', function(d){
+    return 'id'+d.id;
+  })  
+  .on("click", view_relations)
+  .append("title")
+  .style("opacity", ".5");*/
+}
 
    /*init SVG Layer */
-  map._initPathRoot();
-  var svg = d3.select("#map").select("svg");
+ /* map._initPathRoot();
+  var svg = d3.select("#map").select("svg");*/
 
 /* initialize data structures to store events for D3 data nodes*/
   var events_map = new Map();
@@ -197,9 +256,9 @@ button {
   var values = new Set();
   var categoriesIDvalues = [];
 
-  queue()
+ /* queue()
   .defer(d3.json,"categories.json")
-  .await(initDraw); 
+  .await(initDraw); */
 
   function initDraw(err, collection){
     if(err){
