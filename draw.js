@@ -150,9 +150,9 @@ function draw_onRsvp(id){
 
   function draw_edges(edges) {
 
-   var colors = ["#6CE96C","#052605"];
+   var colors = ["#8CE96C","black"];
 
-    var edgeColorScale = d3.scale.sqrt()
+    var edgeColorScale = d3.scale.pow(0.01)
     .domain([0,1])
     .range(colors);
 
@@ -164,7 +164,7 @@ function draw_onRsvp(id){
     .enter()
     .append('line')
     .style('stroke', function(d){
-      return edgeColorScale(d.weight);
+      return edgeColorScale(d.weight*2);
     })
     .attr('x1', function(d){
       return map.latLngToLayerPoint(d.point1).x;
@@ -180,7 +180,8 @@ function draw_onRsvp(id){
     })
     .append('title')
     .text(function(d) {
-        return "Weight: " + d.weight;
+        return "Weight: " + d.weight*100 + "%" +
+               "\nCommon members n°: " + d.length;
       });
 
     /*

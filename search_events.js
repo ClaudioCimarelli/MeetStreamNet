@@ -111,7 +111,7 @@ function view_relations(d) {
 					var intersection = $.arrayIntersect(myevent_members, event_members);
 					if(intersection.length>0){
 						var weight = intersection.length/(Math.max(event_members.length, myevent_members.length));
-						create_relation(myevent.event_id, event.id, weight);
+						create_relation(myevent.event_id, event.id, weight, intersection.length);
 					}
 				}
 			});	
@@ -140,7 +140,7 @@ String.prototype.hashCode = function() {
 };
 
 
-function create_relation(evtId1, evtId2, weight){
+function create_relation(evtId1, evtId2, weight, length){
 
 	var id1 = (""+evtId1+evtId2).hashCode();
 	var id2 = (""+evtId2+evtId1).hashCode();
@@ -156,7 +156,8 @@ function create_relation(evtId1, evtId2, weight){
 		'id' : id1,
 		'point1' : point1,
 		'point2' : point2,
-		'weight': weight
+		'weight': weight,
+		'length': length
     }
 
     edges_collection.push(newEdge);
