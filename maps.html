@@ -229,7 +229,7 @@ button {
 
     var content = d3.select(".leaflet-top");
     var div = content.append("div").attr("class", "leaflet-control");
-    div.html("<dl class=\"dropdown\"><dt><a href=\"#\"><span class=\"hida\">Category list : </span><span class=\"multiSel\"></span></a></dt><dd><div class=\"multiSelect\"></div></dd><input type=\"submit\" onclick=\"selectAll_filter()\" value=\"Select All\"><input type=\"submit\" onclick=\"clear_filter()\" value=\"Clear All\"></dl>");
+    div.html("<dl class=\"dropdown\"><dt><a href=\"#\"><span class=\"hida\">Category list : </span><span class=\"multiSel\"></span></a></dt><dd><div class=\"multiSelect\"></div></dd><input type=\"submit\" onclick=\"selectAll_filter()\" value=\"Select All\"><input type=\"submit\" onclick=\"clear_filter()\" value=\"Clear Selection\"></dl>");
     var multiSelect = div.select(".multiSelect").html("<ul id=\"filterSelection\"></ul>");
     var list = multiSelect.select("#filterSelection");
     var li_cat = list.selectAll("li").data(categories, function(d){
@@ -315,9 +315,9 @@ button {
 
   function filter_categories() {         
      if(selectedCategoryIDs.size===0) {
-      categoriesIDvalues.forEach(function(catID) {
+      category2events.forEach(function(catID) {
         var eventsByCategory = category2events.get(catID);
-        if(eventsByCategory){ 
+        if(eventsByCategory){
           eventsByCategory.forEach(function(evtID){
                  var circle = d3.select("#id"+evtID);
                  circle[0][0].parentNode.style["opacity"] = null;        
@@ -328,7 +328,7 @@ button {
      }
 
      selectedCategoryIDs.forEach(function(catID) {
-        var eventsByCategory = category2events.get(catID);
+        var eventsByCategory = category2events.get(Number(catID));
         if(eventsByCategory){ 
           eventsByCategory.forEach(function(evtID){
             var circle = d3.select("#id"+evtID);

@@ -195,7 +195,7 @@ function create_event(doc){
 	var category = newEvent.category;
 	var eventsByCategory = category2events.get(category.id);
 	if(!eventsByCategory){
-		eventsByCategory = [];
+		eventsByCategory = [];		
 		category2events.set(category.id, eventsByCategory);
 	}
 	eventsByCategory.push(doc.id);
