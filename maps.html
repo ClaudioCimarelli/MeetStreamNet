@@ -23,6 +23,7 @@ html, body, #map{
     .bubble :hover {
         stroke: #000;
         stroke-width: 3px;
+        stroke-opacity : .5;
       }
 
     .leaflet-container {
@@ -228,7 +229,7 @@ button {
 
     var content = d3.select(".leaflet-top");
     var div = content.append("div").attr("class", "leaflet-control");
-    div.html("<dl class=\"dropdown\"><dt><a href=\"#\"><span class=\"hida\">Category list : </span><span class=\"multiSel\"></span></a></dt><dd><div class=\"multiSelect\"></div></dd><input type=\"submit\" onclick=\"filter_categories()\" value=\"Select\"><input type=\"submit\" onclick=\"clear_filter()\" value=\"Clear All\"></dl>");
+    div.html("<dl class=\"dropdown\"><dt><a href=\"#\"><span class=\"hida\">Category list : </span><span class=\"multiSel\"></span></a></dt><dd><div class=\"multiSelect\"></div></dd><input type=\"submit\" onclick=\"selectAll_filter()\" value=\"Select All\"><input type=\"submit\" onclick=\"clear_filter()\" value=\"Clear All\"></dl>");
     var multiSelect = div.select(".multiSelect").html("<ul id=\"filterSelection\"></ul>");
     var list = multiSelect.select("#filterSelection");
     var li_cat = list.selectAll("li").data(categories, function(d){
@@ -288,11 +289,26 @@ button {
       selectedCategoryIDs.delete(d.value);
   }
 
+  function selectAll_filter(){
+
+     var inputs = $('.multiSelect input[type="checkbox"]');     
+     for (var i=0; i<categoriesIDvalues.length; i++) {
+      var title = inputs[i].value + ",";
+      if (!(inputs[i].checked)) {
+        var html = '<span title="' + title + '">' + title + '</span>';
+        $('.multiSel').append(html);
+        inputs[i].prop('checked',true);
+        selectedCategoryIDs.add(inputs[i].value);
+      }      
+    }
+    //filter_categories();
+  }
+
   function clear_filter(){
 
      var inputs = $('.multiSelect input[type="checkbox"]');
      inputs.prop('checked',false);
-     for (var i=0; i<21; i++) {
+     for (var i=0; i<categoriesIDvalues.length; i++) {
       var title = inputs[i].value + ",";
       $('span[title="' + title + '"]').remove(); 
       selectedCategoryIDs.delete(inputs[i].value);

@@ -59,6 +59,8 @@ function draw_onRsvp(id){
             + "\nColor: Blue-->Proposed || Red-->Upcoming";
       });
 
+    filter_categories();
+
     blink_transition(id); //start blink transition on rsvp
 }
 /* blink events that received an RSVP */
@@ -86,7 +88,7 @@ function draw_onRsvp(id){
           marker.setStyle({
             'color' : 'yellow',
             'fillColor' : 'yellow',
-            'opacity': 1,
+            'opacity': 0,
             'fillOpacity': 0.9
           });
         })
@@ -138,8 +140,8 @@ function draw_onRsvp(id){
         })        
         .each('start', function(){
           marker.setStyle({
-            'opacity': 0.5,
-            'fillOpacity': 0.2
+            'opacity': 0.2,
+            'fillOpacity': 0.3
           });
         });
   }
