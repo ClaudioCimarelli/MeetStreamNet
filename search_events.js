@@ -77,7 +77,7 @@ function search_draw(options,callback){
 }
 
 function view_relations(d) {
-	var myevent = events_map.get(d.id);
+	var myevent = events_map.get(d.event_id);
 	var options = {
 	'lat' : d.point.lat,
 	'lon' : d.point.lng,
@@ -198,14 +198,10 @@ function create_event(doc){
 		category_list = [];
 		category_map.set(category.id, category_list);
 	}
-	category_list.push({
-	  'id': doc.id,
-	  'point': point,
-	  'time': newEvent.time
-	});
+	category_list.push(doc.id);
 	/*base index event_ID -> event */
-	events_map.set(doc.id, newEvent); 
-	draw_enter(category.id);
+	events_map.set(doc.id, newEvent);
+	draw_event(newEvent);
 	draw_onRsvp(doc.id);
 }
 
