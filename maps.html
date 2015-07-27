@@ -290,22 +290,19 @@ button {
   }
 
   function selectAll_filter(){
-
-     var inputs = $('.multiSelect input[type="checkbox"]');     
-     for (var i=0; i<categoriesIDvalues.length; i++) {
-      var title = inputs[i].value + ",";
+    var inputs = $('.multiSelect input[type="checkbox"]');
+    for (var i=0; i<categoriesIDvalues.length; i++) {
       if (!(inputs[i].checked)) {
+        var title = inputs[i].value + ",";
         var html = '<span title="' + title + '">' + title + '</span>';
-        $('.multiSel').append(html);
-        inputs[i].prop('checked',true);
+        $('.multiSel').append(html); 
         selectedCategoryIDs.add(inputs[i].value);
-      }      
+      }
     }
-    //filter_categories();
+    inputs.prop('checked',true);
   }
 
   function clear_filter(){
-
      var inputs = $('.multiSelect input[type="checkbox"]');
      inputs.prop('checked',false);
      for (var i=0; i<categoriesIDvalues.length; i++) {
