@@ -177,38 +177,19 @@ button {
 /* initialize data structures to store events for D3 data nodes*/
   var events_map = new Map();
   var waiting_on_get = new Set();
-  var category_map = new Map();
+  var category2events = new Map();
   var event2circle = new Map();
   
 /*start and stop streaming */
   var start = true;
   
 /*filter on categories util*/ 
-  var values = new Set();
+  var selectedCategoryIDs = new Set();
   var categoriesIDvalues = [];
 
- /* queue()
+  queue()
   .defer(d3.json,"categories.json")
-  .await(initDraw); */
-
-  map.on('contextmenu', function(e) {
-    var options = {
-      'lat' : e.latlng.lat,
-      'lon' : e.latlng.lng
-    }
-    search_draw(options);
-    });
-
-  map.on("viewreset", update);
-
-
-  /* CORE STREAMING part, 
-  recall must client to get streamed data of rsvp objects */
-  must.Rsvps(function(rsvp) {
-     if(start) manage_newRsvp(rsvp);
-  });
-
-
+  .await(initDraw);
 
   function initDraw(err, collection){
     if(err){
@@ -217,23 +198,11 @@ button {
     var categories = collection.categories;
     categoriesIDvalues = categories.map(function(cat){
       return cat.id;
-    })
+    });
+    
+    filterSelection(categories);
 
-    svg.selectAll("g")
-      .data(categories, function(d){
-        return d.id;
-      })
-      .enter().append("g")
-      .attr("class", "leaflet-zoom-hide bubble")
-      .attr("id", function(d){
-        return "id" + d.id;
-      });
-
-    svg.append("g")
-    .attr("class", "edges")
-      .attr("id", "idEdges");
-
-
+    /* MAP EVENT*/
     map.on('contextmenu', function(e) {
     var options = {
       'lat' : e.latlng.lat,
@@ -242,13 +211,15 @@ button {
     search_draw(options);
     });
 
+    map.on("viewreset", update);
+
+
     /* CORE STREAMING part, 
     recall must client to get streamed data of rsvp objects */
     must.Rsvps(function(rsvp) {
        if(start) manage_newRsvp(rsvp);
     });
-    
-    filterSelection(categories);
+
 
   } 
   
@@ -312,9 +283,9 @@ button {
 
   function arrayValue(d) {
     if (d.checked)
-      values.add(d.value);
+      selectedCategoryIDs.add(d.value);
     else
-      values.delete(d.value);
+      selectedCategoryIDs.delete(d.value);
   }
 
   function clear_filter(){
@@ -324,36 +295,48 @@ button {
      for (var i=0; i<21; i++) {
       var title = inputs[i].value + ",";
       $('span[title="' + title + '"]').remove(); 
-      values.delete(inputs[i].value);
+      selectedCategoryIDs.delete(inputs[i].value);
       }
     //filter_categories();
   }
 
   function filter_categories() {         
-     if(values.size===0) {
-      categoriesIDvalues.forEach(function(d) {
-        var g = svg.select("#id"+d);
-        g.style("opacity", null);
+     if(selectedCategoryIDs.size===0) {
+      categoriesIDvalues.forEach(function(catID) {
+        var eventsByCategory = category2events.get(catID);
+        if(eventsByCategory){ 
+          eventsByCategory.forEach(function(evtID){
+                 var circle = d3.select("#id"+evtID);
+                 circle[0][0].parentNode.style["opacity"] = null;        
+          });
+        }
       });
       return;      
      }
-     values.forEach(function(d) {
-        var g = svg.select("#id"+d);
-        g.style("opacity", null);
-     });   
 
-     categoriesIDvalues.forEach(function(d) {
-        if (!values.has(d+"")){
-        var g = svg.select("#id"+d);
-        g.style("opacity", 0);
+     selectedCategoryIDs.forEach(function(catID) {
+        var eventsByCategory = category2events.get(catID);
+        if(eventsByCategory){ 
+          eventsByCategory.forEach(function(evtID){
+            var circle = d3.select("#id"+evtID);
+            circle[0][0].parentNode.style["opacity"] = null;
+          });
+        }
+     }); 
+
+     categoriesIDvalues.forEach(function(catID) {
+        if (!selectedCategoryIDs.has(""+ catID)){
+          var eventsByCategory = category2events.get(catID);
+          if(eventsByCategory){ 
+            eventsByCategory.forEach(function(evtID){
+              var circle = d3.select("#id"+evtID);
+              circle[0][0].parentNode.style["opacity"] = 0;
+            });
+          }
         }
      });
   }     
 
-
-/*var fragment = "<dl class=\"dropdown leaflet-control\"><dt><a href=\"#\"><span class=\"hida\">Select</span><p class=\"multiSel\"></p></a></dt><dd><div class=\"mutliSelect\"><ul><li><input type=\"checkbox\" value=\"Apple\" />Apple</li><li><input type=\"checkbox\" value=\"Blackberry\" />Blackberry</li><li><input type=\"checkbox\" value=\"HTC\" />HTC</li><li><input type=\"checkbox\" value=\"Sony Ericson\" />Sony Ericson</li><li><input type=\"checkbox\" value=\"Motorola\" />Motorola</li><li><input type=\"checkbox\" value=\"Nokia\" />Nokia</li></ul></div></dd><button>Filter</button></dl>";
-    var cont = document.getElementsByClassName('leaflet-bottom leaflet-left');
-    cont[0].innerHTML=fragment;*/
 </script>
 
 </body>

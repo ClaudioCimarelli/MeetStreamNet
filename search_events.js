@@ -193,12 +193,12 @@ function create_event(doc){
 
 	/*index category -> list event */
 	var category = newEvent.category;
-	var category_list = category_map.get(category.id);
-	if(!category_list){
-		category_list = [];
-		category_map.set(category.id, category_list);
+	var eventsByCategory = category2events.get(category.id);
+	if(!eventsByCategory){
+		eventsByCategory = [];
+		category2events.set(category.id, eventsByCategory);
 	}
-	category_list.push(doc.id);
+	eventsByCategory.push(doc.id);
 	/*base index event_ID -> event */
 	events_map.set(doc.id, newEvent);
 	draw_event(newEvent);
