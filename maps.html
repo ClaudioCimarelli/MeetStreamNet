@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="A map of streamed data for RSVPs on MeetUP platform">
+<meta name="keywords" content="D3,Leaflet, Chart, Meetup, Streaming">
+<meta name="author" content="Edoardo Basili - Claudio Cimarelli">
+<title>MeetUP RSVPs Stream Network</title>
+
+<style>
+html, body, #map{
+        height: 100%;
+        width: 100%;
+      }
+    body{
+        margin: 0;
+      }
+    svg {
+        position: relative;
+      }
+
+    .bubble :hover {
+        stroke: #000;
+        stroke-width: 3px;
+        stroke-opacity : .5;
+      }
+
+    .leaflet-container {
+      cursor: auto !important;
+      }
+
+a {
+    color:#fff;
+}
+.dropdown dd, .dropdown dt {
+    margin:0px;
+    padding:0px;
+}
+.dropdown ul {
+    margin: -1px 0 0 0;
+}
+.dropdown dd {
+    position:relative;
+}
+.dropdown a, 
+.dropdown a:visited {
+    color:#fff;
+    text-decoration:none;
+    outline:none;
+    font-size: 12px;
+}
+.dropdown dt a {
+    background-color:#4F6877;
+    display:block;
+    padding: 8px 20px 5px 10px;
+    /*min-height: 25px;
+    line-height: 24px;*/
+    overflow: hidden;
+    border:0;
+    width:100px;
+}
+.dropdown dt a span, .multiSel span {
+    cursor:pointer;
+    display:inline-block;
+    padding: 0 3px 2px 0;
+}
+.dropdown dd ul {
+    background-color: #4F6877;
+    border:0;
+    color:#fff;
+    display:none;
+    left:0px;
+    padding: 2px 15px 2px 5px;
+    position:absolute;
+    top:2px;
+    width:200px;
+    list-style:none;
+    height: 100px;
+    overflow: auto;
+}
+.dropdown span.value {
+    display:none;
+}
+.dropdown dd ul li a {
+    padding:5px;
+    display:block;
+}
+.dropdown dd ul li a:hover {
+    background-color:#fff;
+}
+.multiSel p {
+    margin: 0;
+  }
+
+button {
+  background-color: #6BBE92;
+  width: 130px;
+  border: 0;
+  padding: 10px 0;
+  margin: 5px 0;
+  text-align: center;
+  color: #fff;
+  font-weight: bold;
+}
+
+</style>
+
+ <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+ <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
+ <script src="http://d3js.org/queue.v1.min.js"></script>
+ <script src="http://d3js.org/d3.v3.min.js"></script>
+ <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+ <script src="bower_components/jquery/jquery.min.js"></script>
+ <script src="bower_components/must/must.js"></script>
+ <script src="bower_components/strftime/strftime-min.js"></script>
+ <script src="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+ <script src="draw.js"></script>
+ <script src="events_api.js"></script>
+ <script src="search_events.js"></script>
+
+</head>
+
+<body>
+
+  <div id="map"></div>
+
+<script>
+
+"use strict";
+
+/* LEAFLET MAP LAYERS */
+
+  var tileProviderUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}';
+
+  var attributionText = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a> © <em>Authors: Basili &amp Cimarelli</em>';
+
+  var accessToken = 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg';
+
+  var street = L.tileLayer(tileProviderUrl, {
+      'attribution': attributionText,
+      'maxZoom': 18,
+      'minZoom': 2,
+      'id': 'claudius.ml99a5kb',
+      'accessToken': accessToken
+  });
+  var light = L.tileLayer(tileProviderUrl, {
+      'attribution': attributionText,
+      'maxZoom': 18,
+      'minZoom': 2,
+      'id': 'claudius.momifm3d',
+      'accessToken': accessToken
+  });
+
+  var map = new L.Map("map", {
+    'center': [11.8858, 12.4822],
+    'zoom': 2,
+    'layers': [light] //default layer
+  });
+
+  var baseMaps = {
+    'Light' : light,
+    'Street' : street
+  }
+/*User Geo Location */
+  L.control.locate().addTo(map);
+
+/*multi layer group control added to map*/
+  L.control.layers(baseMaps).addTo(map);  
+
+   /*init SVG Layer */
+ /* map._initPathRoot();
+  var svg = d3.select("#map").select("svg");*/
+  map._initPathRoot();
+
+  d3.select("#map").select("svg").attr('class', "leaflet-zoom-animated leaflet-zoom-hide bubble");
+
+/* initialize data structures to store events for D3 data nodes*/
+  var events_map = new Map();
+  var waiting_on_get = new Set();
+  var category2events = new Map();
+  var event2circle = new Map();
+  
+/*start and stop streaming */
+  var start = true;
+  
+/*filter on categories util*/ 
+  var selectedCategoryIDs = new Set();
+  var categoriesIDvalues = [];
+
+  queue()
+  .defer(d3.json,"categories.json")
+  .await(initDraw);
+
+  function initDraw(err, collection){
+    if(err){
+      return console.log(err);
+    }
+    var categories = collection.categories;
+    categoriesIDvalues = categories.map(function(cat){
+      return cat.id;
+    });
+    
+    filterSelection(categories);
+
+    /* MAP EVENT*/
+    map.on('contextmenu', function(e) {
+    var options = {
+      'lat' : e.latlng.lat,
+      'lon' : e.latlng.lng
+    }
+    search_draw(options);
+    });
+
+    map.on("viewreset", update);
+
+
+    /* CORE STREAMING part, 
+    recall must client to get streamed data of rsvp objects */
+    must.Rsvps(function(rsvp) {
+       if(start) manage_newRsvp(rsvp);
+    });
+
+
+  } 
+  
+
+  function filterSelection(categories){    
+
+    var content = d3.select(".leaflet-top");
+    var div = content.append("div").attr("class", "leaflet-control");
+    div.html("<dl class=\"dropdown\"><dt><a href=\"#\"><span class=\"hida\">Category list : </span><span class=\"multiSel\"></span></a></dt><dd><div class=\"multiSelect\"></div></dd><input type=\"submit\" onclick=\"selectAll_filter()\" value=\"Select All\"><input type=\"submit\" onclick=\"clear_filter()\" value=\"Clear Selection\"></dl>");
+    var multiSelect = div.select(".multiSelect").html("<ul id=\"filterSelection\"></ul>");
+    var list = multiSelect.select("#filterSelection");
+    var li_cat = list.selectAll("li").data(categories, function(d){
+      return d.id;
+    })
+    .enter().append("li")
+    .attr("id", function(d){
+      return "id"+d.id;
+    });
+    li_cat
+    .html(function(d){
+       return "<input type=\"checkbox\" onclick=\"arrayValue(this)\" value="+ d.id + ">"
+               + d.name;
+    }); 
+
+    $(".dropdown dt a").on('click', function () {
+          $(".dropdown dd ul").slideToggle('fast');
+      });
+
+    $(".dropdown dd ul li a").on('click', function () {
+        $(".dropdown dd ul").hide();
+    });
+
+    function getSelectedValue(id) {
+         return $("#" + id).find("dt a span.value").html();
+    }
+
+    $(document).bind('click', function (e) {
+        var $clicked = $(e.target);
+        if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
+    });
+
+
+    $('.multiSelect input[type="checkbox"]').on('click', function () {
+      
+        var title = $(this).closest('.multiSelect').find('input[type="checkbox"]').val(),
+            title = $(this).val() + ",";
+      
+        if ($(this).is(':checked')) {
+            var html = '<span title="' + title + '">' + title + '</span>';
+            $('.multiSel').append(html);
+            //$(".hida").hide();
+        } 
+        else {
+            $('span[title="' + title + '"]').remove();
+            //var ret = $(".hida");
+            //$('.dropdown dt a').append(ret);
+            
+        }
+    });
+  }
+
+  function arrayValue(d) {
+    if (d.checked)
+      selectedCategoryIDs.add(d.value);
+    else
+      selectedCategoryIDs.delete(d.value);
+  }
+
+  function selectAll_filter(){
+    var inputs = $('.multiSelect input[type="checkbox"]');
+    for (var i=0; i<categoriesIDvalues.length; i++) {
+      if (!(inputs[i].checked)) {
+        var title = inputs[i].value + ",";
+        var html = '<span title="' + title + '">' + title + '</span>';
+        $('.multiSel').append(html); 
+        selectedCategoryIDs.add(inputs[i].value);
+      }
+    }
+    inputs.prop('checked',true);
+  }
+
+  function clear_filter(){
+     var inputs = $('.multiSelect input[type="checkbox"]');
+     inputs.prop('checked',false);
+     for (var i=0; i<categoriesIDvalues.length; i++) {
+      var title = inputs[i].value + ",";
+      $('span[title="' + title + '"]').remove(); 
+      selectedCategoryIDs.delete(inputs[i].value);
+      }
+    //filter_categories();
+  }
+
+  function filter_categories() {         
+     if(selectedCategoryIDs.size===0) {
+      category2events.forEach(function(catID) {
+        var eventsByCategory = category2events.get(catID);
+        if(eventsByCategory){
+          eventsByCategory.forEach(function(evtID){
+                 var circle = d3.select("#id"+evtID);
+                 circle[0][0].parentNode.style["opacity"] = null;        
+          });
+        }
+      });
+      return;      
+     }
+
+     selectedCategoryIDs.forEach(function(catID) {
+        var eventsByCategory = category2events.get(Number(catID));
+        if(eventsByCategory){ 
+          eventsByCategory.forEach(function(evtID){
+            var circle = d3.select("#id"+evtID);
+            circle[0][0].parentNode.style["opacity"] = null;
+          });
+        }
+     }); 
+
+     categoriesIDvalues.forEach(function(catID) {
+        if (!selectedCategoryIDs.has(""+ catID)){
+          var eventsByCategory = category2events.get(catID);
+          if(eventsByCategory){ 
+            eventsByCategory.forEach(function(evtID){
+              var circle = d3.select("#id"+evtID);
+              circle[0][0].parentNode.style["opacity"] = 0;
+            });
+          }
+        }
+     });
+  }     
+
+</script>
+
+</body>
+</html>
