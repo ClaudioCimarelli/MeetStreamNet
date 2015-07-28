@@ -1,0 +1,69 @@
+<html>
+  <head>
+   <script src="events_api.js"></script>
+   <script src="search_events.js"></script>
+   <script src="http://d3js.org/queue.v1.min.js"></script>
+   <script src="http://d3js.org/d3.v3.min.js"></script>
+   <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+   <script src="bower_components/jquery/jquery.min.js"></script>
+   <script src="bower_components/must/must.js"></script>
+   <script src="bower_components/strftime/strftime-min.js"></script>
+   <script src="draw.js"></script>
+  </head>
+  <body>
+  <div id="map"></div>
+
+<script>
+
+"use strict";
+
+/* LEAFLET MAP LAYERS */
+
+  var tileProviderUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}';
+
+  var attributionText = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a> © <em>Authors: Basili &amp Cimarelli</em>';
+
+  var accessToken = 'pk.eyJ1IjoiY2xhdWRpdXMiLCJhIjoiMTg2OWQ5MmZhMGFhZmFkOWI3MjAxNGUxYmQ5MmJkYzEifQ.wHi63c8jHANnb2gds4JjGg';
+
+  var street = L.tileLayer(tileProviderUrl, {
+      'attribution': attributionText,
+      'maxZoom': 18,
+      'minZoom': 2,
+      'id': 'claudius.ml99a5kb',
+      'accessToken': accessToken
+  });
+  var light = L.tileLayer(tileProviderUrl, {
+      'attribution': attributionText,
+      'maxZoom': 18,
+      'minZoom': 2,
+      'id': 'claudius.momifm3d',
+      'accessToken': accessToken
+  });
+
+  var map = new L.Map("map", {
+    'center': [41.8858, 12.4822],
+    'zoom': 2,
+    'layers': [light] //default layer
+  });
+
+  var baseMaps = {
+    'Light' : light,
+    'Street' : street
+  }
+
+/*multi layer group control added to map*/
+  L.control.layers(baseMaps).addTo(map);
+
+  /*init SVG Layer */
+  map._initPathRoot();
+  var svg = d3.select("#map").select("svg"),//d3.select(map.getPanes().overlayPane).append("svg
+      g = svg.append("g").attr("class", "leaflet-zoom-hide bubble"); // when the user zooms in or out you need to reset the view
+
+</script>
+
+    <script type="text/javascript">
+    var point = [41.8858, 12.4822];
+    search_draw(point[0], point[1], 20);
+    </script>
+  </body>
+</html>

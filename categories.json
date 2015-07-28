@@ -1,0 +1,171 @@
+{"categories":[
+{
+"name": "Uncategorized",
+"id": 0,
+"shortname": "Uncategorized"
+},{
+"name": "Arts & Culture",
+"id": 1,
+"shortname": "Arts"
+},
+{
+"name": "Career & Business",
+"id": 2,
+"shortname": "Business"
+},
+{
+"name": "Cars & Motorcycles",
+"id": 3,
+"shortname": "Auto"
+},
+{
+"name": "Community & Environment",
+"id": 4,
+"shortname": "Community"
+},
+{
+"name": "Dancing",
+"id": 5,
+"shortname": "Dancing"
+},
+{
+"name": "Education & Learning",
+"id": 6,
+"shortname": "Education"
+},
+{
+"name": "Fashion & Beauty",
+"id": 8,
+"shortname": "Fashion"
+},
+{
+"name": "Fitness",
+"id": 9,
+"shortname": "Fitness"
+},
+{
+"name": "Food & Drink",
+"id": 10,
+"shortname": "Food & Drink"
+},
+{
+"name": "Games",
+"id": 11,
+"shortname": "Games"
+},
+{
+"name": "Movements & Politics",
+"id": 13,
+"shortname": "Movements"
+},
+{
+"name": "Health & Wellbeing",
+"id": 14,
+"shortname": "Well-being"
+},
+{
+"name": "Hobbies & Crafts",
+"id": 15,
+"shortname": "Crafts"
+},
+{
+"name": "Language & Ethnic Identity",
+"id": 16,
+"shortname": "Languages"
+},
+{
+"name": "LGBT",
+"id": 12,
+"shortname": "LGBT"
+},
+{
+"name": "Lifestyle",
+"id": 17,
+"shortname": "Lifestyle"
+},
+{
+"name": "Literature & Writing",
+"id": 18,
+"shortname": "Literature"
+},
+{
+"name": "Movies & Film",
+"id": 20,
+"shortname": "Films"
+},
+{
+"name": "Music",
+"id": 21,
+"shortname": "Music"
+},
+{
+"name": "New Age & Spirituality",
+"id": 22,
+"shortname": "Spirituality"
+},
+{
+"name": "Outdoors & Adventure",
+"id": 23,
+"shortname": "Outdoors"
+},
+{
+"name": "Paranormal",
+"id": 24,
+"shortname": "Paranormal"
+},
+{
+"name": "Parents & Family",
+"id": 25,
+"shortname": "Moms & Dads"
+},
+{
+"name": "Pets & Animals",
+"id": 26,
+"shortname": "Pets"
+},
+{
+"name": "Photography",
+"id": 27,
+"shortname": "Photography"
+},
+{
+"name": "Religion & Beliefs",
+"id": 28,
+"shortname": "Beliefs"
+},
+{
+"name": "Sci-Fi & Fantasy",
+"id": 29,
+"shortname": "Sci fi"
+},
+{
+"name": "Singles",
+"id": 30,
+"shortname": "Singles"
+},
+{
+"name": "Socializing",
+"id": 31,
+"shortname": "Social"
+},
+{
+"name": "Sports & Recreation",
+"id": 32,
+"shortname": "Sports"
+},
+{
+"name": "Support",
+"id": 33,
+"shortname": "Support"
+},
+{
+"name": "Tech",
+"id": 34,
+"shortname": "Tech"
+},
+{
+"name": "Women",
+"id": 35,
+"shortname": "Women"
+}
+]}
