@@ -220,6 +220,8 @@ button {
     must.Rsvps(function(rsvp) {
        if(start) manage_newRsvp(rsvp);
     });
+
+    selectAll_filter();
   } 
   
 
@@ -308,7 +310,6 @@ button {
       $('span[title="' + title + '"]').remove(); 
       selectedCategoryIDs.delete(inputs[i].value);
       }
-    //filter_categories();
   }
 
   function filter_categories() {         
