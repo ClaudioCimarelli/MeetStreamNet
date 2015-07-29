@@ -59,6 +59,8 @@ function draw_onRsvp(id){
             + "\nColor: Blue-->Proposed || Red-->Upcoming";
       });
 
+    selectedCategoryIDs.add(id);
+
     filter_categories();
 
     blink_transition(id); //start blink transition on rsvp
