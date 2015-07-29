@@ -221,9 +221,9 @@ button {
     });
 
 
+    selectAll_filter();
   } 
   
-
   function filterSelection(categories){    
 
     var content = d3.select(".leaflet-top");
@@ -309,7 +309,6 @@ button {
       $('span[title="' + title + '"]').remove(); 
       selectedCategoryIDs.delete(inputs[i].value);
       }
-    //filter_categories();
   }
 
   function filter_categories() {         
@@ -352,4 +351,5 @@ button {
 </script>
 
 </body>
+
 </html>
